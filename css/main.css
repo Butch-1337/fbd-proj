@@ -1,0 +1,76 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+#content {	
+	height: 800px;
+	width: 1200px;
+	margin: 10px auto;
+	border: 1px solid black;
+}
+
+.ui-draggable {
+	width: 100px;
+	height: 100px;
+	background: #757575;
+	/*border: 1px solid black;*/
+	margin: 10px;
+	-webkit-border-radius: 10%;
+	-moz-border-radius: 10%;
+	border-radius: 10%;
+}
+
+.ui-draggable-dragging { opacity: 0.8; }
+		
+.ui-draggable {
+	position: relative;
+}
+
+.ui-draggable .block-name {
+	padding-top: 20px;
+	font-size: 20px;
+	text-align: center;
+}
+
+.in {
+	position: absolute;
+	height: 5px;
+	width: 10px;
+	background: black;
+	left: -10px;	
+}
+
+.in:hover {
+	background-color: #C5C518;
+}
+
+.in1 {
+	top: 30%;	
+}
+
+.in2 {
+	bottom: 30%;
+}
+
+.out {
+	position: absolute;
+	height: 5px;
+	width: 10px;
+	background: black;
+	right: -10px;
+	top: 50%;
+}
+
+.out:hover {
+	background-color: #C5C518;
+}
+
+.ui-draggable button{
+	margin: 5px 40px;
+}
+
+#block3 {
+	margin-left: 400px;
+}
+
