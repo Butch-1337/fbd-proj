@@ -15,19 +15,19 @@
 		<div id="content">	
 		  <div class="ui-draggable" id="block1">
 			<div class="block-name"> 1/0 </div>
-			<div class="out" id="b1out" onclick="mouseoverHandler(event)">0</div>
+			<div class="out" id="b1out" data-action="startPoint">0</div>
 			<button onclick="init('b1out')">1/0</button>
 		  </div>
 		  <div class="ui-draggable" id="block2">
 			<div class="block-name"> 1/0 </div>
-			<div class="out" id="b2out" onclick="mouseoverHandler(event)">0</div>
+			<div class="out" id="b2out" data-action="startPoint">0</div>
 			<button onclick="init('b2out')" >1/0</button>
 		  </div>
 		  <div class="ui-draggable" id="block3">
 			<div class="block-name"> & </div>
-			<div class="in in1" id="b3in1" onclick="p2pArrow(this.id)"></div>
-			<div class="in in2" id="b3in2" onclick="p2pArrow(this.id)"></div>
-			<div class="out" id="b3out"></div>
+			<div class="in in1" id="b3in1" data-action="endPoint"></div>
+			<div class="in in2" id="b3in2" data-action="endPoint"></div>
+			<div class="out" id="b3out" data-action="startPoint"></div>
 		  </div>
 		</div>
 	</div>
@@ -38,7 +38,6 @@
 		<script src="lib/jquery-ui.min.js"></script>
 		<script src="lib/arrows.1.0.0.js"></script>
 		<script>
-				
 			function Menu(elem) {
 				var idnumber = 4;
 				
@@ -79,6 +78,35 @@
 			
 			new Menu(menu);
 			
+			function Content(elem) {
+								
+				this.startPoint = function() {
+				  event = event || window.event;
+				  oId = event.target.id;
+				};
+				
+				this.endPoint = function() {
+				  event = event || window.event;
+				  p2 = event.target.id;
+				  var arrowsDrawerN = $cArrows('#content');	  
+				  arrowsDrawerN.arrow('#'+oId, '#'+p2,
+				  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
+				  arrowsArr.push(arrowsDrawerN);
+				};
+				
+				var self = this;
+
+				elem.onclick = function(e) {
+				  var target = e.target;
+				  var action = target.getAttribute('data-action');
+				  if (action) {
+					self[action]();
+				  }
+				};
+		    }
+			
+			new Content(content);
+			
 			function createBlock(blockType, idn) {
 				switch(blockType) {
 				  case "sw":
@@ -92,6 +120,7 @@
 					div1.innerHTML = "1/0";
 					div2.className = "out";
 					div2.id = "b" + idn + "out";
+					div2.setAttribute("data-action","startPoint");
 					div2.innerHTML = 0;
 					btn.innerHTML = "1/0";
 					document.getElementById("content").appendChild(div);
@@ -111,10 +140,13 @@
 					div1.innerHTML = "&";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");
 					div3.className = "in in2";
 					div3.id = "b" + idn + "in2";
+					div3.setAttribute("data-action","endPoint");
 					div4.className = "out";
 					div4.id = "b" + idn + "out";
+					div4.setAttribute("data-action","startPoint");
 					document.getElementById("content").appendChild(div);
 					document.getElementById("block"+idn).appendChild(div1);
 					document.getElementById("block"+idn).appendChild(div2);
@@ -133,10 +165,13 @@
 					div1.innerHTML = "OR";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");
 					div3.className = "in in2";
 					div3.id = "b" + idn + "in2";
+					div3.setAttribute("data-action","endPoint");
 					div4.className = "out";
 					div4.id = "b" + idn + "out";
+					div4.setAttribute("data-action","startPoint");
 					document.getElementById("content").appendChild(div);
 					document.getElementById("block"+idn).appendChild(div1);
 					document.getElementById("block"+idn).appendChild(div2);
@@ -155,10 +190,13 @@
 					div1.innerHTML = "XOR";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");
 					div3.className = "in in2";
 					div3.id = "b" + idn + "in2";
+					div3.setAttribute("data-action","endPoint");
 					div4.className = "out";
 					div4.id = "b" + idn + "out";
+					div4.setAttribute("data-action","startPoint");
 					document.getElementById("content").appendChild(div);
 					document.getElementById("block"+idn).appendChild(div1);
 					document.getElementById("block"+idn).appendChild(div2);
@@ -172,27 +210,13 @@
 		  // Определим «общего родителя», на котором будут рисоваться стрелки (создаваться холст – canvas)
 		  var arrowsDrawer1 = $cArrows('#content');
 		  var arrowsDrawer2 = $cArrows('#content');
+		  var arrowsArr = [];
 		  var oId; 
 		  var i1 = document.getElementById("b3in1").innerHTML;
-		  var i2 = document.getElementById("b3in2").innerHTML;;
+		  var i2 = document.getElementById("b3in2").innerHTML;
 			
-			// Обработчик для mouseover
-			function mouseoverHandler(event) {
-				event = event || window.event;
-				var relatedTarget = event.relatedTarget || event.fromElement;
-				oId = event.target.id;
-				// для mouseover
-				// relatedTarget - элемент, с которого пришел курсор мыши
-			}
-			
-			
-			function p2pArrow(p2) {
-				/*if (oId == "b1out"){
-					arrowsDrawer1.arrow('#'+oId, '#'+p2,
-					{ arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-					if (p2 == "b3in1") i1 = 1;
-					if (p2 == "b3in2") i2 = 1;
-				}*/
+			/*function p2pArrow(p2) {
+
 				if (oId == "b1out"){
 					if (p2 == "b3in1" && i1 != 1) {
 						arrowsDrawer1.arrow('#'+oId, '#'+p2,
@@ -218,7 +242,7 @@
 					}
 					
 				}
-			}
+			}*/
 			
 			function andbl(id1,id2) {
 				var bv1 = document.getElementById(id1).innerHTML;
@@ -293,6 +317,9 @@
 			  drag: function( event, ui ) {
 				arrowsDrawer1.redraw();
 				arrowsDrawer2.redraw();
+				for (var i = 0; i < arrowsArr.length; i++) {
+				 arrowsArr[i].redraw();
+				}
 			  }
 			});			
 		  }
