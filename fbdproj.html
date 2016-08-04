@@ -4,33 +4,86 @@
 		<link rel="stylesheet" href="css/main.css" />	
 	</head>
 	<body>
-	<div id="content">	
-	  <div class="ui-draggable" id="block1">
-		<div class="block-name"> 1/0 </div>
-		<div class="out" id="b1out" onclick="mouseoverHandler(event)">0</div>
-		<button onclick="init('b1out')">1/0</button>
-	  </div>
-	  <div class="ui-draggable" id="block2">
-		<div class="block-name"> 1/0 </div>
-		<div class="out" id="b2out" onclick="mouseoverHandler(event)">0</div>
-		<button onclick="init('b2out')" >1/0</button>
-	  </div>
-	  <div class="ui-draggable" id="block3">
-		<div class="block-name"> & </div>
-		<div class="in in1" id="b3in1" onclick="p2pArrow(this.id)"></div>
-		<div class="in in2" id="b3in2" onclick="p2pArrow(this.id)"></div>
-		<div class="out" id="b3out"></div>
-	  </div>
-
+	<div id = "main"> 
+		<div id = "menu">
+			<span>Blocks<span>
+			<button class="menu-button" data-action="switch">1/0</button>
+			<button class="menu-button"> & </button>
+			<button class="menu-button"> OR </button>
+			<button class="menu-button"> XOR </button>
+		</div>
+		<div id="content">	
+		  <div class="ui-draggable" id="block1">
+			<div class="block-name"> 1/0 </div>
+			<div class="out" id="b1out" onclick="mouseoverHandler(event)">0</div>
+			<button onclick="init('b1out')">1/0</button>
+		  </div>
+		  <div class="ui-draggable" id="block2">
+			<div class="block-name"> 1/0 </div>
+			<div class="out" id="b2out" onclick="mouseoverHandler(event)">0</div>
+			<button onclick="init('b2out')" >1/0</button>
+		  </div>
+		  <div class="ui-draggable" id="block3">
+			<div class="block-name"> & </div>
+			<div class="in in1" id="b3in1" onclick="p2pArrow(this.id)"></div>
+			<div class="in in2" id="b3in2" onclick="p2pArrow(this.id)"></div>
+			<div class="out" id="b3out"></div>
+		  </div>
+		</div>
 	</div>
-
 	</body>
 		<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script> -->
 		<script src="lib/jquery-1.5.min.js"></script>
 		<script src="lib/jquery-ui.min.js"></script>
 		<script src="lib/arrows.1.0.0.js"></script>
-		<script>	
+		<script>
+				
+			function Menu(elem) {
+				var idnumber = 4;
+				this.switch = function() {
+				  createBlock("sw", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				var self = this;
+
+				elem.onclick = function(e) {
+				  var target = e.target;
+				  var action = target.getAttribute('data-action');
+				  if (action) {
+					self[action]();
+				  }
+				};
+		    }
+			
+			new Menu(menu);
+			
+			function createBlock(blockType, idn) {
+				switch(blockType) {
+				  case "sw":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div');
+						btn = document.createElement('button');
+					div.className = "ui-draggable";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.innerHTML = "1/0";
+					div2.className = "out";
+					div2.id = "b" + idn + "out";
+					div2.innerHTML = 0;
+					btn.innerHTML = "1/0";
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(btn);
+				  break;
+				}
+			
+			}
+		
 		  // Определим «общего родителя», на котором будут рисоваться стрелки (создаваться холст – canvas)
 		  var arrowsDrawer1 = $cArrows('#content');
 		  var arrowsDrawer2 = $cArrows('#content');
@@ -147,7 +200,7 @@
 		  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});*/
 		  
 		  // Перерисовка при перемещении с jQuery Ui
-		  $(function() {
+		  function dragndrop() {
 			$( "#content .ui-draggable" ).draggable({
 			  containment: "#content",
 			  scroll: false,
@@ -157,7 +210,9 @@
 				arrowsDrawer2.redraw();
 			  }
 			});			
-		  });
+		  }
+		  
+		  dragndrop();
 		  
 		</script>
 </html>
