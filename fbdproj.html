@@ -8,9 +8,9 @@
 		<div id = "menu">
 			<span>Blocks<span>
 			<button class="menu-button" data-action="switch">1/0</button>
-			<button class="menu-button"> & </button>
-			<button class="menu-button"> OR </button>
-			<button class="menu-button"> XOR </button>
+			<button class="menu-button" data-action="and"> & </button>
+			<button class="menu-button" data-action="or"> OR </button>
+			<button class="menu-button" data-action="xor"> XOR </button>
 		</div>
 		<div id="content">	
 		  <div class="ui-draggable" id="block1">
@@ -41,8 +41,27 @@
 				
 			function Menu(elem) {
 				var idnumber = 4;
+				
 				this.switch = function() {
 				  createBlock("sw", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.and = function() {
+				  createBlock("and", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.or = function() {
+				  createBlock("or", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.xor = function() {
+				  createBlock("xor", idnumber);
 				  dragndrop();
 				  idnumber++;
 				};
@@ -79,6 +98,72 @@
 					document.getElementById("block"+idn).appendChild(div1);
 					document.getElementById("block"+idn).appendChild(div2);
 					document.getElementById("block"+idn).appendChild(btn);
+				  break;				  
+				  case "and":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div');
+						div3 = document.createElement('div');
+						div4 = document.createElement('div');
+					div.className = "ui-draggable";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.innerHTML = "&";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div3.className = "in in2";
+					div3.id = "b" + idn + "in2";
+					div4.className = "out";
+					div4.id = "b" + idn + "out";
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					document.getElementById("block"+idn).appendChild(div4);
+				  break;
+				  case "or":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div');
+						div3 = document.createElement('div');
+						div4 = document.createElement('div');
+					div.className = "ui-draggable";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.innerHTML = "OR";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div3.className = "in in2";
+					div3.id = "b" + idn + "in2";
+					div4.className = "out";
+					div4.id = "b" + idn + "out";
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					document.getElementById("block"+idn).appendChild(div4);
+				  break;
+				  case "xor":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div');
+						div3 = document.createElement('div');
+						div4 = document.createElement('div');
+					div.className = "ui-draggable";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.innerHTML = "XOR";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div3.className = "in in2";
+					div3.id = "b" + idn + "in2";
+					div4.className = "out";
+					div4.id = "b" + idn + "out";
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					document.getElementById("block"+idn).appendChild(div4);
 				  break;
 				}
 			
@@ -216,28 +301,4 @@
 		  
 		</script>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
