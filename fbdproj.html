@@ -38,6 +38,15 @@
 		<script src="lib/jquery-ui.min.js"></script>
 		<script src="lib/arrows.1.0.0.js"></script>
 		<script>
+				  // Определим «общего родителя», на котором будут рисоваться стрелки (создаваться холст – canvas)
+		  var arrowsDrawer1 = $cArrows('#content');
+		  var arrowsDrawer2 = $cArrows('#content');
+		  var arrowsArr = [];
+		  var oId;
+		  var p2;
+		  var i1 = document.getElementById("b3in1").innerHTML;
+		  var i2 = document.getElementById("b3in2").innerHTML;
+		
 			function Menu(elem) {
 				var idnumber = 4;
 				
@@ -91,7 +100,7 @@
 				  var arrowsDrawerN = $cArrows('#content');	  
 				  arrowsDrawerN.arrow('#'+oId, '#'+p2,
 				  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-				  arrowsArr.push(arrowsDrawerN);
+				  arrowsArr.push([oId,arrowsDrawerN]);
 				};
 				
 				var self = this;
@@ -123,6 +132,7 @@
 					div2.setAttribute("data-action","startPoint");
 					div2.innerHTML = 0;
 					btn.innerHTML = "1/0";
+					btn.setAttribute("onclick","init('" + div2.id + "')");
 					document.getElementById("content").appendChild(div);
 					document.getElementById("block"+idn).appendChild(div1);
 					document.getElementById("block"+idn).appendChild(div2);
@@ -205,15 +215,7 @@
 				  break;
 				}
 			
-			}
-		
-		  // Определим «общего родителя», на котором будут рисоваться стрелки (создаваться холст – canvas)
-		  var arrowsDrawer1 = $cArrows('#content');
-		  var arrowsDrawer2 = $cArrows('#content');
-		  var arrowsArr = [];
-		  var oId; 
-		  var i1 = document.getElementById("b3in1").innerHTML;
-		  var i2 = document.getElementById("b3in2").innerHTML;
+			}		
 			
 			/*function p2pArrow(p2) {
 
@@ -255,32 +257,22 @@
 				var bv = document.getElementById(outId).innerHTML;		
 				if (bv == 0) {
 				  bc.style.background = 'red';
-				  switch (outId){
-				  case "b1out": 
-				  arrowsDrawer1.updateOptions(
-				  { render: {strokeStyle:'red'}})
-				  arrowsDrawer1.redraw();
-				  break;
-				  case "b2out":
-				  arrowsDrawer2.updateOptions(
-				  { render: {strokeStyle:'red'}})
-				  arrowsDrawer2.redraw();
-				  break;
+				  for (var i = 0; i < arrowsArr.length; i++) {
+					if (outId == arrowsArr[i][0]) {
+					 arrowsArr[i][1].updateOptions(
+				     { render: {strokeStyle:'red'}})
+				     arrowsArr[i][1].redraw();
+					} 
 				  }
 				}
 				else {
 				  bc.style.background = 'green';
-				  switch (outId){
-				  case "b1out": 
-				  arrowsDrawer1.updateOptions(
-				  { render: {strokeStyle:'green'}})
-				  arrowsDrawer1.redraw();
-				  break;
-				  case "b2out":
-				  arrowsDrawer2.updateOptions(
-				  { render: {strokeStyle:'green'}})
-				  arrowsDrawer2.redraw();
-				  break;
+				  for (var i = 0; i < arrowsArr.length; i++) {
+					if (outId == arrowsArr[i][0]) {
+					 arrowsArr[i][1].updateOptions(
+				     { render: {strokeStyle:'green'}})
+				     arrowsArr[i][1].redraw();
+					} 
 				  }
 				} 
 			}
@@ -318,7 +310,7 @@
 				arrowsDrawer1.redraw();
 				arrowsDrawer2.redraw();
 				for (var i = 0; i < arrowsArr.length; i++) {
-				 arrowsArr[i].redraw();
+				 arrowsArr[i][1].redraw();
 				}
 			  }
 			});			
