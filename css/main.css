@@ -3,7 +3,35 @@
 	padding: 0;
 }
 
-#content {	
+#main {
+	/*display: inline-block;*/
+	margin: 10px auto;
+}
+
+#menu {
+	float: left;
+	height: 800px;
+	width: 100px;
+	margin: 10px 10px;
+	border: 1px solid black;
+}
+
+#menu span{
+	display: inline-block;
+	width: 100px;
+	margin: 10px auto;
+	font-size: 20px;
+	text-align: center;
+}
+
+.menu-button {
+	width: 80px;
+	height: 30px;
+	margin: 5px 10px;
+}
+
+#content {
+	float: left;	
 	height: 800px;
 	width: 1200px;
 	margin: 10px auto;
@@ -19,13 +47,10 @@
 	-webkit-border-radius: 10%;
 	-moz-border-radius: 10%;
 	border-radius: 10%;
+	position: relative;
 }
 
 .ui-draggable-dragging { opacity: 0.8; }
-		
-.ui-draggable {
-	position: relative;
-}
 
 .ui-draggable .block-name {
 	padding-top: 20px;
