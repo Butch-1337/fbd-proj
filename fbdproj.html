@@ -42,10 +42,9 @@
 		  var arrowsDrawer1 = $cArrows('#content');
 		  var arrowsDrawer2 = $cArrows('#content');
 		  var arrowsArr = [];
+		  var blocksArr = [];
 		  var oId;
 		  var p2;
-		  var i1 = document.getElementById("b3in1").innerHTML;
-		  var i2 = document.getElementById("b3in2").innerHTML;
 		
 			function Menu(elem) {
 				var idnumber = 4;
@@ -87,7 +86,7 @@
 			
 			new Menu(menu);
 			
-			function Content(elem) {
+			function ContentClick(elem) {
 								
 				this.startPoint = function() {
 				  event = event || window.event;
@@ -100,7 +99,9 @@
 				  var arrowsDrawerN = $cArrows('#content');	  
 				  arrowsDrawerN.arrow('#'+oId, '#'+p2,
 				  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-				  arrowsArr.push([oId,arrowsDrawerN]);
+				  arrowsArr.push([oId, p2, arrowsDrawerN]);
+				  document.getElementById(p2).innerHTML =
+				  document.getElementById(oId).innerHTML;
 				};
 				
 				var self = this;
@@ -114,7 +115,7 @@
 				};
 		    }
 			
-			new Content(content);
+			new ContentClick(content);
 			
 			function createBlock(blockType, idn) {
 				switch(blockType) {
@@ -162,6 +163,9 @@
 					document.getElementById("block"+idn).appendChild(div2);
 					document.getElementById("block"+idn).appendChild(div3);
 					document.getElementById("block"+idn).appendChild(div4);
+					blocksArr.push([andbl, div4.id, div2.id, div3.id]);
+					//var x = document.getElementById(div2.id);
+					div2.addEventListener("DOMCharacterDataModified",andbl(div2.id,div3.id));
 				  break;
 				  case "or":
 					var div = document.createElement('div'),
@@ -215,41 +219,20 @@
 				  break;
 				}
 			
-			}		
-			
-			/*function p2pArrow(p2) {
-
-				if (oId == "b1out"){
-					if (p2 == "b3in1" && i1 != 1) {
-						arrowsDrawer1.arrow('#'+oId, '#'+p2,
-						{ arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-						i1 = 1;
-					}
-					if (p2 == "b3in2" && i2 != 1) {
-						arrowsDrawer1.arrow('#'+oId, '#'+p2,
-						{ arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-						i2 = 1;
-					}
-				}
-				if (oId == "b2out"){
-					if (p2 == "b3in1" && i1 != 1) {
-						arrowsDrawer2.arrow('#'+oId, '#'+p2,
-						{ arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-						i1 = 1;
-					}
-					if (p2 == "b3in2" && i2 != 1) {
-						arrowsDrawer2.arrow('#'+oId, '#'+p2,
-						{ arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-						i2 = 1;
-					}
-					
-				}
-			}*/
+			}			
 			
 			function andbl(id1,id2) {
 				var bv1 = document.getElementById(id1).innerHTML;
-				var bv2 = document.getElementById(id2).innerHTML;	
-				document.getElementById("b3out").innerHTML = Number(bv1) && Number(bv2);
+				var bv2 = document.getElementById(id2).innerHTML;
+				var out = findBlockOut(id1);
+				document.getElementById(out).innerHTML = Number(bv1) && Number(bv2);
+			}
+			
+			function findBlockOut(id) {
+			  for (var i = 0; i < blocksArr.length; i++) {
+				 if(blocksArr[i].indexOf(id) != 0) var p = i;
+				}
+			  return blocksArr[p][1];
 			}
 			
 			function chColor(outId) {
@@ -259,9 +242,9 @@
 				  bc.style.background = 'red';
 				  for (var i = 0; i < arrowsArr.length; i++) {
 					if (outId == arrowsArr[i][0]) {
-					 arrowsArr[i][1].updateOptions(
+					 arrowsArr[i][2].updateOptions(
 				     { render: {strokeStyle:'red'}})
-				     arrowsArr[i][1].redraw();
+				     arrowsArr[i][2].redraw();
 					} 
 				  }
 				}
@@ -269,9 +252,9 @@
 				  bc.style.background = 'green';
 				  for (var i = 0; i < arrowsArr.length; i++) {
 					if (outId == arrowsArr[i][0]) {
-					 arrowsArr[i][1].updateOptions(
+					 arrowsArr[i][2].updateOptions(
 				     { render: {strokeStyle:'green'}})
-				     arrowsArr[i][1].redraw();
+				     arrowsArr[i][2].redraw();
 					} 
 				  }
 				} 
@@ -288,11 +271,36 @@
 			  }				
 			  document.getElementById(outId).innerHTML = bv;
 			  chColor(outId);
-			  if (i1==1 && i2==1){
+			  var p, idx;
+			  for (var i = 0; i < arrowsArr.length; i++) {
+				 if(arrowsArr[i].indexOf(outId) == 0) p = i;
+				}
+			  idx = arrowsArr[p][1];
+			  document.getElementById(idx).innerHTML = bv;
+			  chColor(idx);
+			  
+			  //console.log(blocksArr);
+			  
+			 /*for (var i = 0; i < blocksArr.length; i++) {
+				console.log(blocksArr[i][2]);
+				if (blocksArr[i][2]) {
+				 var x = document.getElementById(blocksArr[i][2]);
+				 console.log(x);
+				 x.addEventListener("change", andbl(blocksArr[i][2],blocksArr[i][3]));
+				}
+			 }*/
+			  
+			  
+			  /*var x = document.getElementById("b3in1");
+			  x.addEventListener("change", andbl());*/
+			  /*if (i1==1 && i2==1){
 				andbl("b1out","b2out");
 				chColor("b3out");
-			  } 
+			  }*/ 
 		  }
+		  
+		  
+		    
 		     
 		  // Рисуем стрелки .arrow(from, to)
 		  /*arrowsDrawer1.arrow('#block1 .out', '#block3 .in1',
@@ -310,7 +318,7 @@
 				arrowsDrawer1.redraw();
 				arrowsDrawer2.redraw();
 				for (var i = 0; i < arrowsArr.length; i++) {
-				 arrowsArr[i][1].redraw();
+				 arrowsArr[i][2].redraw();
 				}
 			  }
 			});			
