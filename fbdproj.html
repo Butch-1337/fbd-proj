@@ -224,7 +224,7 @@
 			
 			var callback = function(){
 				for (var i = 0; i < blocksArr.length; i++) {
-					blocksArr[i][0](blocksArr[i][2],blocksArr[i][3]);
+					new blocksArr[i][0](blocksArr[i][1],blocksArr[i][2],blocksArr[i][3]);
 				}
 			};
 			var observer = new MutationObserver(callback);
@@ -235,20 +235,19 @@
 			}
 			
 			
-			function andbl(id1,id2) {
+			function andbl(out,id1,id2) {
 				var bv1 = document.getElementById(id1).innerHTML;
 				var bv2 = document.getElementById(id2).innerHTML;
-				var out = findBlockOut(id1);
 				document.getElementById(out).innerHTML = Number(bv1) && Number(bv2);
-				console.log("tst");
 			}
 			
-			function findBlockOut(id) {
+			/*function findBlockOut(id) {
 			  for (var i = 0; i < blocksArr.length; i++) {
 				 if(blocksArr[i].indexOf(id) != 0) var p = i;
 				}
+				console.log(blocksArr);
 			  return blocksArr[p][1];
-			}
+			}*/
 			
 			function chColor(outId) {
 				var bc = document.getElementById(outId);
