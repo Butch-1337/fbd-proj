@@ -163,6 +163,7 @@
 					document.getElementById("block"+idn).appendChild(div2);
 					document.getElementById("block"+idn).appendChild(div3);
 					document.getElementById("block"+idn).appendChild(div4);
+					//var a = new andbl(div4.id, div2.id, div3.id);
 					blocksArr.push([andbl, div4.id, div2.id, div3.id]);
 					//var x = document.getElementById(div2.id);
 					//div2.addEventListener("DOMCharacterDataModified",console.log("111"));
@@ -224,7 +225,9 @@
 			
 			var callback = function(){
 				for (var i = 0; i < blocksArr.length; i++) {
-					new blocksArr[i][0](blocksArr[i][1],blocksArr[i][2],blocksArr[i][3]);
+					//var bl = new blocksArr[i][0](blocksArr[i][1],blocksArr[i][2],blocksArr[i][3]);
+					console.log(blocksArr);
+					blocksArr[i][0](blocksArr[i][1],blocksArr[i][2],blocksArr[i][3]);
 				}
 			};
 			var observer = new MutationObserver(callback);
