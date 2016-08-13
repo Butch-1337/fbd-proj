@@ -226,8 +226,10 @@
 			var callback = function(){
 				for (var i = 0; i < blocksArr.length; i++) {
 					//var bl = new blocksArr[i][0](blocksArr[i][1],blocksArr[i][2],blocksArr[i][3]);
-					console.log(blocksArr);
+					//console.log(blocksArr);
 					blocksArr[i][0](blocksArr[i][1],blocksArr[i][2],blocksArr[i][3]);
+					chColor(blocksArr[i][1]);
+					chIn(blocksArr[i][1]);
 				}
 			};
 			var observer = new MutationObserver(callback);
@@ -243,14 +245,6 @@
 				var bv2 = document.getElementById(id2).innerHTML;
 				document.getElementById(out).innerHTML = Number(bv1) && Number(bv2);
 			}
-			
-			/*function findBlockOut(id) {
-			  for (var i = 0; i < blocksArr.length; i++) {
-				 if(blocksArr[i].indexOf(id) != 0) var p = i;
-				}
-				console.log(blocksArr);
-			  return blocksArr[p][1];
-			}*/
 			
 			function chColor(outId) {
 				var bc = document.getElementById(outId);
@@ -275,10 +269,9 @@
 					} 
 				  }
 				} 
-			}
-		  //window.alert (Number(bv1) && Number(bv2));		  
+			}	  
 		  
-		  function init(outId){
+		    function init(outId){
 			  var bv = document.getElementById(outId).innerHTML;
 			  if (bv == 0) {
 				  bv = 1;
@@ -288,35 +281,31 @@
 			  }				
 			  document.getElementById(outId).innerHTML = bv;
 			  chColor(outId);
-			  var p, idx;
+			  
+			  chIn(outId);
+			  /*var p, idx;
 			  for (var i = 0; i < arrowsArr.length; i++) {
 				 if(arrowsArr[i].indexOf(outId) == 0) p = i;
 				}
 			  idx = arrowsArr[p][1];
 			  document.getElementById(idx).innerHTML = bv;
-			  chColor(idx);
-			  
-			  //console.log(blocksArr);
-			  
-			 /*for (var i = 0; i < blocksArr.length; i++) {
-				console.log(blocksArr[i][2]);
-				if (blocksArr[i][2]) {
-				 var x = document.getElementById(blocksArr[i][2]);
-				 console.log(x);
-				 x.addEventListener("change", andbl(blocksArr[i][2],blocksArr[i][3]));
+			  chColor(idx);*/
+			  			  
+		    }
+		  
+		    function chIn(outId) {
+				var bv = document.getElementById(outId).innerHTML;
+				var p, idx;
+				for (var i = 0; i < arrowsArr.length; i++) {
+					if(arrowsArr[i].indexOf(outId) == 0) {
+						p = i;
+						idx = arrowsArr[p][1];
+						document.getElementById(idx).innerHTML = bv;
+						chColor(idx);	
+					}
 				}
-			 }*/
-			  
-			  
-			  /*var x = document.getElementById("b3in1");
-			  x.addEventListener("change", andbl());*/
-			  /*if (i1==1 && i2==1){
-				andbl("b1out","b2out");
-				chColor("b3out");
-			  }*/ 
-		  }
-		  
-		  
+			  		  		
+		    }
 		    
 		     
 		  // Рисуем стрелки .arrow(from, to)
