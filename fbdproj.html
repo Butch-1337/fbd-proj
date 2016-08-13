@@ -11,6 +11,7 @@
 			<button class="menu-button" data-action="and"> & </button>
 			<button class="menu-button" data-action="or"> OR </button>
 			<button class="menu-button" data-action="xor"> XOR </button>
+			<button class="menu-button" data-action="not"> NOT </button>
 		</div>
 		<div id="content">	
 		  <div class="ui-draggable" id="block1">
@@ -23,12 +24,12 @@
 			<div class="out" id="b2out" data-action="startPoint">0</div>
 			<button onclick="init('b2out')" >1/0</button>
 		  </div>
-		  <div class="ui-draggable" id="block3">
+		  <!-- <div class="ui-draggable" id="block3">
 			<div class="block-name"> & </div>
 			<div class="in in1" id="b3in1" data-action="endPoint"></div>
 			<div class="in in2" id="b3in2" data-action="endPoint"></div>
 			<div class="out" id="b3out" data-action="startPoint"></div>
-		  </div>
+		  </div> -->
 		</div>
 	</div>
 	</body>
@@ -71,6 +72,12 @@
 				  idnumber++;
 				};
 				
+				this.not = function() {
+				  createBlock("not", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
 				var self = this;
 
 				elem.onclick = function(e) {
@@ -94,12 +101,14 @@
 				this.endPoint = function() {
 				  event = event || window.event;
 				  p2 = event.target.id;
-				  var arrowsDrawerN = $cArrows('#content');	  
-				  arrowsDrawerN.arrow('#'+oId, '#'+p2,
-				  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-				  arrowsArr.push([oId, p2, arrowsDrawerN]);
-				  document.getElementById(p2).innerHTML =
-				  document.getElementById(oId).innerHTML;
+				    if (!document.getElementById(p2).innerHTML) {
+					  var arrowsDrawerN = $cArrows('#content');	  
+					  arrowsDrawerN.arrow('#'+oId, '#'+p2,
+					  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
+					  arrowsArr.push([oId, p2, arrowsDrawerN]);
+					  document.getElementById(p2).innerHTML =
+					  document.getElementById(oId).innerHTML;
+				    }				  
 				};
 				
 				var self = this;
@@ -229,6 +238,31 @@
 					observer.observe(div, options);
 					
 				  break;
+				  
+				  case "not":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div');
+						div3 = document.createElement('div');
+					div.className = "ui-draggable";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.innerHTML = "NOT";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");					
+					div3.className = "out";
+					div3.id = "b" + idn + "out";
+					div3.setAttribute("data-action","startPoint");
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					
+					blocksArr.push([notBl, div3.id, div2.id]);
+					observer.observe(div, options);
+					
+				  break;
 				}
 			
 			}
@@ -271,6 +305,11 @@
 				var bv1 = document.getElementById(id1).innerHTML;
 				var bv2 = document.getElementById(id2).innerHTML;
 				document.getElementById(out).innerHTML = Number(bv1) ^ Number(bv2);
+			}
+			
+			function notBl(out,id1) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				document.getElementById(out).innerHTML = Number(!Number(bv1));
 			}
 			
 			///////////// End of Blocks logic section
