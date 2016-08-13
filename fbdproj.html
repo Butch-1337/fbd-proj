@@ -38,9 +38,7 @@
 		<script src="lib/jquery-ui.min.js"></script>
 		<script src="lib/arrows.1.0.0.js"></script>
 		<script>
-				  // Определим «общего родителя», на котором будут рисоваться стрелки (создаваться холст – canvas)
-		  var arrowsDrawer1 = $cArrows('#content');
-		  var arrowsDrawer2 = $cArrows('#content');
+
 		  var arrowsArr = [];
 		  var blocksArr = [];
 		  var oId;
@@ -118,7 +116,9 @@
 			new ContentClick(content);
 			
 			function createBlock(blockType, idn) {
+			
 				switch(blockType) {
+				
 				  case "sw":
 					var div = document.createElement('div'),
 						div1 = document.createElement('div'),
@@ -138,7 +138,8 @@
 					document.getElementById("block"+idn).appendChild(div1);
 					document.getElementById("block"+idn).appendChild(div2);
 					document.getElementById("block"+idn).appendChild(btn);
-				  break;				  
+				  break;
+				  
 				  case "and":
 					var div = document.createElement('div'),
 						div1 = document.createElement('div'),
@@ -163,12 +164,12 @@
 					document.getElementById("block"+idn).appendChild(div2);
 					document.getElementById("block"+idn).appendChild(div3);
 					document.getElementById("block"+idn).appendChild(div4);
-					//var a = new andbl(div4.id, div2.id, div3.id);
-					blocksArr.push([andbl, div4.id, div2.id, div3.id]);
-					//var x = document.getElementById(div2.id);
-					//div2.addEventListener("DOMCharacterDataModified",console.log("111"));
+					
+					blocksArr.push([andBl, div4.id, div2.id, div3.id]);
 					observer.observe(div, options);
+					
 				  break;
+				  
 				  case "or":
 					var div = document.createElement('div'),
 						div1 = document.createElement('div'),
@@ -193,7 +194,12 @@
 					document.getElementById("block"+idn).appendChild(div2);
 					document.getElementById("block"+idn).appendChild(div3);
 					document.getElementById("block"+idn).appendChild(div4);
+					
+					blocksArr.push([orBl, div4.id, div2.id, div3.id]);
+					observer.observe(div, options);
+					
 				  break;
+				  
 				  case "xor":
 					var div = document.createElement('div'),
 						div1 = document.createElement('div'),
@@ -218,33 +224,56 @@
 					document.getElementById("block"+idn).appendChild(div2);
 					document.getElementById("block"+idn).appendChild(div3);
 					document.getElementById("block"+idn).appendChild(div4);
+					
+					blocksArr.push([xorBl, div4.id, div2.id, div3.id]);
+					observer.observe(div, options);
+					
 				  break;
 				}
 			
 			}
 			
+			///////////// MutationObserver section
+			
 			var callback = function(){
 				for (var i = 0; i < blocksArr.length; i++) {
-					//var bl = new blocksArr[i][0](blocksArr[i][1],blocksArr[i][2],blocksArr[i][3]);
-					//console.log(blocksArr);
 					blocksArr[i][0](blocksArr[i][1],blocksArr[i][2],blocksArr[i][3]);
 					chColor(blocksArr[i][1]);
 					chIn(blocksArr[i][1]);
 				}
 			};
+			
 			var observer = new MutationObserver(callback);
+			
 			var  options = {
 				'childList': true,
 				'subtree': true,
 				'characterData': true
 			}
 			
+			///////////// End of MutationObserver section
 			
-			function andbl(out,id1,id2) {
+			///////////// Blocks logic section
+			
+			function andBl(out,id1,id2) {
 				var bv1 = document.getElementById(id1).innerHTML;
 				var bv2 = document.getElementById(id2).innerHTML;
-				document.getElementById(out).innerHTML = Number(bv1) && Number(bv2);
+				document.getElementById(out).innerHTML = Number(bv1) & Number(bv2);
 			}
+			
+			function orBl(out,id1,id2) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var bv2 = document.getElementById(id2).innerHTML;
+				document.getElementById(out).innerHTML = Number(bv1) | Number(bv2);
+			}
+			
+			function xorBl(out,id1,id2) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var bv2 = document.getElementById(id2).innerHTML;
+				document.getElementById(out).innerHTML = Number(bv1) ^ Number(bv2);
+			}
+			
+			///////////// End of Blocks logic section
 			
 			function chColor(outId) {
 				var bc = document.getElementById(outId);
@@ -272,24 +301,17 @@
 			}	  
 		  
 		    function init(outId){
-			  var bv = document.getElementById(outId).innerHTML;
-			  if (bv == 0) {
+				var bv = document.getElementById(outId).innerHTML;
+				if (bv == 0) {
 				  bv = 1;
-			  }
-			  else {
-				bv = 0;
-			  }				
-			  document.getElementById(outId).innerHTML = bv;
-			  chColor(outId);
-			  
-			  chIn(outId);
-			  /*var p, idx;
-			  for (var i = 0; i < arrowsArr.length; i++) {
-				 if(arrowsArr[i].indexOf(outId) == 0) p = i;
 				}
-			  idx = arrowsArr[p][1];
-			  document.getElementById(idx).innerHTML = bv;
-			  chColor(idx);*/
+				else {
+					bv = 0;
+				}
+				
+				document.getElementById(outId).innerHTML = bv;
+				chColor(outId);
+				chIn(outId);
 			  			  
 		    }
 		  
@@ -306,23 +328,14 @@
 				}
 			  		  		
 		    }
-		    
-		     
-		  // Рисуем стрелки .arrow(from, to)
-		  /*arrowsDrawer1.arrow('#block1 .out', '#block3 .in1',
-		  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-		  arrowsDrawer2.arrow('#b2out', '#b3in2',
-		  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});*/
 		  
-		  // Перерисовка при перемещении с jQuery Ui
+		  // Redrawing draggable elements with jQuery Ui
 		  function dragndrop() {
 			$( "#content .ui-draggable" ).draggable({
 			  containment: "#content",
 			  scroll: false,
 			  cursor: 'move',
 			  drag: function( event, ui ) {
-				arrowsDrawer1.redraw();
-				arrowsDrawer2.redraw();
 				for (var i = 0; i < arrowsArr.length; i++) {
 				 arrowsArr[i][2].redraw();
 				}
