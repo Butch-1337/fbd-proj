@@ -50,7 +50,9 @@
 	position: relative;
 }
 
-.ui-draggable-dragging { opacity: 0.8; }
+.ui-draggable-dragging { 
+	opacity: 0.8;
+}
 
 .ui-draggable .block-name {
 	padding-top: 20px;
@@ -58,16 +60,22 @@
 	text-align: center;
 }
 
+.ui-draggable .block-name:hover {
+	cursor: default;
+}
+
 .in {
 	position: absolute;
 	height: 5px;
 	width: 10px;
 	background: black;
-	left: -10px;	
+	left: -10px;
+	cursor: crosshair;
 }
 
 .in:hover {
 	background-color: #C5C518;
+	
 }
 
 .in1 {
@@ -85,6 +93,7 @@
 	background: black;
 	right: -10px;
 	top: 50%;
+	cursor: crosshair;
 }
 
 .out:hover {
@@ -102,5 +111,9 @@
 div input {
 	margin: 5px 5px 5px 20px;
 	width: 40px;
+}
+
+button {
+	cursor: pointer;
 }
 
