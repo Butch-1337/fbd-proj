@@ -15,6 +15,7 @@
 			<button class="menu-button" data-action="not"> NOT </button>
 			<button class="menu-button" data-action="nand"> &NOT </button>
 			<button class="menu-button" data-action="delay"> DELAY </button>
+			<button class="menu-button" data-action="ton"> TON </button>
 			<button class="menu-button" data-action="rs"> RS </button>
 		</div>
 		<div id="content">	
@@ -48,6 +49,8 @@
 		  var blocksArr = [];
 		  var oId;
 		  var p2;
+		  var GLD = new Date();
+		  var tArr = [];
 		
 			function Menu(elem) {
 				var idnumber = 4;
@@ -96,6 +99,12 @@
 				
 				this.delay = function() {
 				  createBlock("delay", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.ton = function() {
+				  createBlock("ton", idnumber);
 				  dragndrop();
 				  idnumber++;
 				};
@@ -380,6 +389,38 @@
 					
 				  break;
 				  
+				  case "ton":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div'),
+						input = document.createElement('input'),
+						span = document.createElement('span');
+					div.className = "ui-draggable";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.innerHTML = "TON";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");					
+					div3.className = "out";
+					div3.id = "b" + idn + "out";
+					div3.setAttribute("data-action","startPoint");
+					input.id = "b" + idn + "input";
+					input.setAttribute("type","text");
+					span.innerHTML = "S";
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					document.getElementById("block"+idn).appendChild(input);
+					document.getElementById("block"+idn).appendChild(span);
+					
+					blocksArr.push([tonBl, div3.id, div2.id, input.id]);
+					observer.observe(div, options);
+					
+				  break;
+				  
 				  case "rs":
 					var div = document.createElement('div'),
 						div1 = document.createElement('div'),
@@ -482,19 +523,43 @@
 				setTimeout(initDelay, delay);
 			}
 			
+			function tonBl(out,id1,inpId) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var delay = document.getElementById(inpId).value * 1000;
+				var timer;
+				
+				function initDelay() {
+					/*var d = new Date();
+					var dt = (+d - +GLD)/1000;
+					if (tArr.length == 0) tArr.push(dt - delay/1000);
+					tArr.push(dt);
+					if (tArr.length > 2) tArr.shift();
+					if (tArr[1] - tArr[0] >= delay/1000) document.getElementById(out).innerHTML = 1;
+					else clearTimeout(timer);
+					console.log (timer, dt, bv1, document.getElementById(out).innerHTML,tArr);*/
+					 document.getElementById(out).innerHTML = 1;
+				}
+				if (bv1 == 0) document.getElementById(out).innerHTML = 0;
+				if (bv1 == 1){
+					timer = setTimeout(initDelay, delay);
+				}
+
+			}
+			
 			function rsBl(out,id1,id2) {
 				var x1 = +document.getElementById(id1).innerHTML;
 				var x2 = +document.getElementById(id2).innerHTML;
-				var y1 = 0, yp = 0;
+				var y1 = 0, y2 = 1, yp = 0;
 					
 				function nand(x1,x2) {
 					return x1 & x2 ? 0 : 1;						
 				}
+						
+					y1 = nand(!x1, y2);
+					y2 = nand(!x2, y1);
+					yp = !x2 & y1;
 				
-				yp = nand(!x1,nand(!x2,yp));
-				y1 = !x2 & yp;
-				
-				document.getElementById(out).innerHTML = y1;
+				document.getElementById(out).innerHTML = yp;
 			}
 			
 			///////////// End of Blocks logic section
