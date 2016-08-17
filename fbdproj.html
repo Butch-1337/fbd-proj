@@ -14,6 +14,7 @@
 			<button class="menu-button" data-action="xor"> XOR </button>
 			<button class="menu-button" data-action="not"> NOT </button>
 			<button class="menu-button" data-action="nand"> &NOT </button>
+			<button class="menu-button" data-action="nor"> ORNOT </button>
 			<button class="menu-button" data-action="delay"> DELAY </button>
 			<button class="menu-button" data-action="ton"> TON </button>
 			<button class="menu-button" data-action="rs"> RS </button>
@@ -93,6 +94,12 @@
 				
 				this.nand = function() {
 				  createBlock("nand", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.nor = function() {
+				  createBlock("nor", idnumber);
 				  dragndrop();
 				  idnumber++;
 				};
@@ -357,6 +364,36 @@
 					
 				  break;
 				  
+				  case "nor":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div'),
+						div4 = document.createElement('div');
+					div.className = "ui-draggable";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.innerHTML = "ORNOT";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");
+					div3.className = "in in2";
+					div3.id = "b" + idn + "in2";
+					div3.setAttribute("data-action","endPoint");
+					div4.className = "out";
+					div4.id = "b" + idn + "out";
+					div4.setAttribute("data-action","startPoint");
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					document.getElementById("block"+idn).appendChild(div4);
+					
+					blocksArr.push([norBl, div4.id, div2.id, div3.id]);
+					observer.observe(div, options);
+					
+				  break;
+				  
 				  case "delay":
 					var div = document.createElement('div'),
 						div1 = document.createElement('div'),
@@ -514,6 +551,12 @@
 				document.getElementById(out).innerHTML = +!(+bv1 & +bv2);
 			}
 			
+			function norBl(out,id1,id2) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var bv2 = document.getElementById(id2).innerHTML;
+				document.getElementById(out).innerHTML = +!(+bv1 | +bv2);
+			}
+			
 			function delayBl(out,id1,inpId) {
 				var bv1 = document.getElementById(id1).innerHTML;
 				var delay = document.getElementById(inpId).value * 1000;
@@ -551,15 +594,17 @@
 				var x2 = +document.getElementById(id2).innerHTML;
 				var y1 = 0, y2 = 1, yp = 0;
 					
-				function nand(x1,x2) {
+				/*function nand(x1,x2) {
 					return x1 & x2 ? 0 : 1;						
 				}
 						
 					y1 = nand(!x1, y2);
 					y2 = nand(!x2, y1);
-					yp = !x2 & y1;
+					yp = !x2 & y1;*/
 				
-				document.getElementById(out).innerHTML = yp;
+				yp =  !(!(x1 || y) || x2) 
+				
+				document.getElementById(out).innerHTML = +yp;
 			}
 			
 			///////////// End of Blocks logic section
