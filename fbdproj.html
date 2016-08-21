@@ -51,7 +51,8 @@
 		  var oId;
 		  var p2;
 		  //var GLD = new Date();
-		  //var tArr = [];
+		  var ctObj = {};
+		  var btObj = {};
 		
 			function Menu(elem) {
 				var idnumber = 4;
@@ -454,7 +455,7 @@
 					document.getElementById("block"+idn).appendChild(span);
 					
 					blocksArr.push([tonBl, div3.id, div2.id, input.id]);
-					observer.observe(div, options);
+					observer.observe(div2, options);
 					
 				  break;
 				  
@@ -503,7 +504,7 @@
 			
 			var observer = new MutationObserver(callback);
 			
-			var  options = {
+			var options = {
 				'childList': true,
 				'subtree': true,
 				'characterData': true
@@ -570,23 +571,31 @@
 				var bv1 = document.getElementById(id1).innerHTML;
 				var delay = document.getElementById(inpId).value * 1000;
 				var timer;
+				var D = new Date();
 				
-				function initDelay() {
-					/*var d = new Date();
-					var dt = (+d - +GLD)/1000;
-					if (tArr.length == 0) tArr.push(dt - delay/1000);
-					tArr.push(dt);
-					if (tArr.length > 2) tArr.shift();
-					if (tArr[1] - tArr[0] >= delay/1000) document.getElementById(out).innerHTML = 1;
-					else clearTimeout(timer);
-					console.log (timer, dt, bv1, document.getElementById(out).innerHTML,tArr);*/
+				clearTimeout(ctObj[out]);
+				
+				function initDelay() {			
 					 document.getElementById(out).innerHTML = 1;
+					 chColor(out);
+					 chIn(out);
+					 var cd = new Date();
+					 var dt = (cd - D)/1000;
+					 console.log(ctObj,ctObj[out],dt);
+					 btObj[out] = 1;
 				}
-				if (bv1 == 0) document.getElementById(out).innerHTML = 0;
-				if (bv1 == 1){
+				if (bv1 == 0) {
+					document.getElementById(out).innerHTML = 0;
+					btObj[out] = 0;
+					
+				}
+				if (bv1 == 1 && !btObj[out]){
 					timer = setTimeout(initDelay, delay);
+					ctObj[out] = timer;
 				}
-
+				
+				
+				//console.log(ctObj,ctObj[out]);
 			}
 			
 			function rsBl(out,id1,id2) {
