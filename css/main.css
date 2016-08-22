@@ -117,3 +117,24 @@ button {
 	cursor: pointer;
 }
 
+.new {
+	top: 30%;
+	left: 50%;
+	position: fixed;
+	-webkit-animation-name: fall; /* Chrome, Safari, Opera */
+	        animation-name: fall;
+    -webkit-animation-duration: 1s; /* Chrome, Safari, Opera */
+            animation-duration: 1s;
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes fall {
+	  0% {top: 0%;}
+	100% {top: 30%;}
+}
+
+/* Standard syntax*/
+@keyframes fall {
+	  0% {top: 0%;}
+	100% {top: 30%;}
+}
