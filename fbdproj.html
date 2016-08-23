@@ -23,12 +23,12 @@
 		  <div class="ui-draggable" id="block1">
 			<div class="block-name"> 1/0 </div>
 			<div class="out" id="b1out" data-action="startPoint">0</div>
-			<button onclick="init('b1out')">1/0</button>
+			<button class="sw-button" onclick="init('b1out')">1/0</button>
 		  </div>
 		  <div class="ui-draggable" id="block2">
 			<div class="block-name"> 1/0 </div>
 			<div class="out" id="b2out" data-action="startPoint">0</div>
-			<button onclick="init('b2out')" >1/0</button>
+			<button class="sw-button" onclick="init('b2out')" >1/0</button>
 		  </div>
 		  <!-- <div class="ui-draggable" id="block3">
 			<div class="block-name"> & </div>
@@ -187,6 +187,7 @@
 					div2.id = "b" + idn + "out";
 					div2.setAttribute("data-action","startPoint");
 					div2.innerHTML = 0;
+					btn.className = "sw-button";
 					btn.innerHTML = "1/0";
 					btn.setAttribute("onclick","init('" + div2.id + "')");
 					document.getElementById("content").appendChild(div);
@@ -519,8 +520,8 @@
 				var bv1 = document.getElementById(id1).innerHTML;
 				document.getElementById(out).innerHTML = +bv1;
 				bv1 == 1 ? 
-				parentBl.style.backgroundColor = "green" :
-				parentBl.style.backgroundColor = "red";
+				parentBl.style.background = "radial-gradient(#F7F7F7 0%,green 100%)" :
+				parentBl.style.background = "radial-gradient(#F7F7F7 0%,red 100%)";
 			}
 			
 			function andBl(out,id1,id2) {
