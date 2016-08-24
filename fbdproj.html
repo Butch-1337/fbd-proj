@@ -1,11 +1,11 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ru">
 	<head>
 		<link rel="stylesheet" href="css/main.css" />	
 	</head>
 	<body>
 	<div id = "main"> 
-		<div id = "menu">
+		<div id = "menu" class="borders">
 			<span>Blocks<span>
 			<button class="menu-button" data-action="switch">1/0</button>
 			<button class="menu-button" data-action="out">OUT</button>
@@ -18,15 +18,20 @@
 			<button class="menu-button" data-action="delay"> DELAY </button>
 			<button class="menu-button" data-action="ton"> TON </button>
 			<button class="menu-button" data-action="rs"> RS </button>
+			<span>Delete mode<span>
+			<div id = "delm-div">
+				<input type="checkbox" id="del-mode" data-action="delm"/>
+				<label for="del-mode"></label>
+			</div>
 		</div>
-		<div id="content">	
-		  <div class="ui-draggable" id="block1">
-			<div class="block-name"> 1/0 </div>
+		<div id="content" class="borders">	
+		  <div class="ui-draggable" id="block1" >
+			<div class="block-name" data-action="canBeDel"> 1/0 </div>
 			<div class="out" id="b1out" data-action="startPoint">0</div>
 			<button class="sw-button" onclick="init('b1out')">1/0</button>
 		  </div>
 		  <div class="ui-draggable" id="block2">
-			<div class="block-name"> 1/0 </div>
+			<div class="block-name" data-action="canBeDel"> 1/0 </div>
 			<div class="out" id="b2out" data-action="startPoint">0</div>
 			<button class="sw-button" onclick="init('b2out')" >1/0</button>
 		  </div>
@@ -45,7 +50,7 @@
 		<script src="lib/jquery-ui.min.js"></script>
 		<script src="lib/arrows.1.0.0.js"></script>
 		<script>
-
+		
 		  var arrowsArr = [];
 		  var blocksArr = [];
 		  var oId;
@@ -53,7 +58,9 @@
 		  //var GLD = new Date();
 		  var ctObj = {};
 		  var btObj = {};
-		
+		  
+		  var delMode = 0;
+
 			function Menu(elem) {
 				var idnumber = 4;
 				
@@ -123,6 +130,10 @@
 				  idnumber++;
 				};
 				
+				this.delm = function() {
+				  delMode = +!delMode;
+				};
+				
 				var self = this;
 
 				elem.onclick = function(e) {
@@ -157,6 +168,42 @@
 					else alert("Input is already in use");
 				};
 				
+				this.canBeDel = function() {
+					event = event || window.event;
+					var delBl = event.target.parentElement;
+					var delOId;
+					if (delMode) {
+						if (confirm("Delete block: " + delBl.id + "?")){
+							 
+							for (var i = 0; i < delBl.childNodes.length; i++) {
+								if (delBl.childNodes[i].className == "out") {
+									delOId = delBl.childNodes[i].id;
+								}						
+							}
+							 
+							for (var j = 0; j < blocksArr.length; j++) {
+								if (blocksArr[j][1] == delOId) {
+									blocksArr.splice(j,1);
+								}
+							} 
+							
+							console.log(arrowsArr);
+							
+							for (var k = 0; k < arrowsArr.length; k++) {
+								if (arrowsArr[k][0] == delOId) {
+									arrowsArr[k][2].clear();
+									arrowsArr.splice(k,1);
+								}
+							} 
+							
+							console.log(arrowsArr);
+							
+							//delBl.remove();
+						}
+					
+					} 
+				};
+				
 				var self = this;
 
 				elem.onclick = function(e) {
@@ -182,6 +229,7 @@
 					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "1/0";
 					div2.className = "out";
 					div2.id = "b" + idn + "out";
@@ -204,6 +252,7 @@
 					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "OUT";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
@@ -230,6 +279,7 @@
 					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "&";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
@@ -260,6 +310,7 @@
 					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "OR";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
@@ -290,6 +341,7 @@
 					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "XOR";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
@@ -319,6 +371,7 @@
 					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "NOT";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
@@ -345,6 +398,7 @@
 					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "&NOT";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
@@ -375,6 +429,7 @@
 					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "ORNOT";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
@@ -406,6 +461,7 @@
 					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "DELAY";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
@@ -438,6 +494,7 @@
 					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "TON";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
@@ -469,6 +526,7 @@
 					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "RS";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
