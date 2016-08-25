@@ -190,23 +190,22 @@
 								}
 							} 
 							
-							
-							
 							for (var k = 0; k < arrowsArr.length; k++) {
-								console.log(arrowsArr[k][0],delId)
-								/*if (arrowsArr[k][0] == delId[delId.length-1]) {
+								if (arrowsArr[k][0] == delId[delId.length-1]) {
 									delete inUseObj[arrowsArr[k][1]];
 									arrowsArr[k][2].clear();
 									arrowsArr.splice(k,1);
-								}*/
+								}
+							} 
+							
+							for (var k = 0; k < arrowsArr.length; k++) {
 								for (var l = 0; l < delId.length-1; l++){
-								console.log(arrowsArr[k][1],delId[l])
 									if (arrowsArr[k][1] == delId[l]) {
 										delete inUseObj[arrowsArr[k][1]];
 										arrowsArr[k][2].clear();
 										arrowsArr.splice(k,1);
 									}
-								}	
+								}
 							} 
 							
 							delBl.remove();
