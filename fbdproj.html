@@ -55,6 +55,7 @@
 		  var blocksArr = [];
 		  var oId;
 		  var p2;
+		  var inUseObj = {};
 		  //var GLD = new Date();
 		  var ctObj = {};
 		  var btObj = {};
@@ -157,13 +158,14 @@
 				this.endPoint = function() {
 				  event = event || window.event;
 				  p2 = event.target.id;
-				    if (!document.getElementById(p2).innerHTML) {
+				    if (!inUseObj[p2]) {
 					  var arrowsDrawerN = $cArrows('#content');	  
 					  arrowsDrawerN.arrow('#'+oId, '#'+p2,
 					  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
 					  arrowsArr.push([oId, p2, arrowsDrawerN]);
 					  document.getElementById(p2).innerHTML =
 					  document.getElementById(oId).innerHTML;
+					  inUseObj[p2] = 1;
 				    }
 					else alert("Input is already in use");
 				};
@@ -171,34 +173,43 @@
 				this.canBeDel = function() {
 					event = event || window.event;
 					var delBl = event.target.parentElement;
-					var delOId;
+					var delId = [];
 					if (delMode) {
 						if (confirm("Delete block: " + delBl.id + "?")){
 							 
 							for (var i = 0; i < delBl.childNodes.length; i++) {
-								if (delBl.childNodes[i].className == "out") {
-									delOId = delBl.childNodes[i].id;
+								if (delBl.childNodes[i].className == "out" ||
+									delBl.childNodes[i].className == "in in" + i) {
+									delId.push(delBl.childNodes[i].id);
 								}						
 							}
 							 
 							for (var j = 0; j < blocksArr.length; j++) {
-								if (blocksArr[j][1] == delOId) {
+								if (blocksArr[j][1] == delId[delId.length-1]) {
 									blocksArr.splice(j,1);
 								}
 							} 
 							
-							console.log(arrowsArr);
+							
 							
 							for (var k = 0; k < arrowsArr.length; k++) {
-								if (arrowsArr[k][0] == delOId) {
+								console.log(arrowsArr[k][0],delId)
+								/*if (arrowsArr[k][0] == delId[delId.length-1]) {
+									delete inUseObj[arrowsArr[k][1]];
 									arrowsArr[k][2].clear();
 									arrowsArr.splice(k,1);
-								}
+								}*/
+								for (var l = 0; l < delId.length-1; l++){
+								console.log(arrowsArr[k][1],delId[l])
+									if (arrowsArr[k][1] == delId[l]) {
+										delete inUseObj[arrowsArr[k][1]];
+										arrowsArr[k][2].clear();
+										arrowsArr.splice(k,1);
+									}
+								}	
 							} 
 							
-							console.log(arrowsArr);
-							
-							//delBl.remove();
+							delBl.remove();
 						}
 					
 					} 
