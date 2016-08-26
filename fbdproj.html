@@ -1,34 +1,46 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ru">
 	<head>
 		<link rel="stylesheet" href="css/main.css" />	
 	</head>
 	<body>
 	<div id = "main"> 
-		<div id = "menu">
+		<div id = "menu" class="borders">
 			<span>Blocks<span>
 			<button class="menu-button" data-action="switch">1/0</button>
+			<button class="menu-button" data-action="out">OUT</button>
 			<button class="menu-button" data-action="and"> & </button>
 			<button class="menu-button" data-action="or"> OR </button>
 			<button class="menu-button" data-action="xor"> XOR </button>
+			<button class="menu-button" data-action="not"> NOT </button>
+			<button class="menu-button" data-action="nand"> &NOT </button>
+			<button class="menu-button" data-action="nor"> ORNOT </button>
+			<button class="menu-button" data-action="delay"> DELAY </button>
+			<button class="menu-button" data-action="ton"> TON </button>
+			<button class="menu-button" data-action="rs"> RS </button>
+			<span>Delete mode<span>
+			<div id = "delm-div">
+				<input type="checkbox" id="del-mode" data-action="delm"/>
+				<label for="del-mode"></label>
+			</div>
 		</div>
-		<div id="content">	
-		  <div class="ui-draggable" id="block1">
-			<div class="block-name"> 1/0 </div>
+		<div id="content" class="borders">	
+		  <div class="ui-draggable" id="block1" >
+			<div class="block-name" data-action="canBeDel"> 1/0 </div>
 			<div class="out" id="b1out" data-action="startPoint">0</div>
-			<button onclick="init('b1out')">1/0</button>
+			<button class="sw-button" onclick="init('b1out')">1/0</button>
 		  </div>
 		  <div class="ui-draggable" id="block2">
-			<div class="block-name"> 1/0 </div>
+			<div class="block-name" data-action="canBeDel"> 1/0 </div>
 			<div class="out" id="b2out" data-action="startPoint">0</div>
-			<button onclick="init('b2out')" >1/0</button>
+			<button class="sw-button" onclick="init('b2out')" >1/0</button>
 		  </div>
-		  <div class="ui-draggable" id="block3">
+		  <!-- <div class="ui-draggable" id="block3">
 			<div class="block-name"> & </div>
 			<div class="in in1" id="b3in1" data-action="endPoint"></div>
 			<div class="in in2" id="b3in2" data-action="endPoint"></div>
 			<div class="out" id="b3out" data-action="startPoint"></div>
-		  </div>
+		  </div> -->
 		</div>
 	</div>
 	</body>
@@ -36,22 +48,32 @@
 		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script> -->
 		<script src="lib/jquery-1.5.min.js"></script>
 		<script src="lib/jquery-ui.min.js"></script>
+		<script src="lib/jquery.ui.touch-punch.min.js"></script>
 		<script src="lib/arrows.1.0.0.js"></script>
 		<script>
-				  // Определим «общего родителя», на котором будут рисоваться стрелки (создаваться холст – canvas)
-		  var arrowsDrawer1 = $cArrows('#content');
-		  var arrowsDrawer2 = $cArrows('#content');
+		
 		  var arrowsArr = [];
+		  var blocksArr = [];
 		  var oId;
 		  var p2;
-		  var i1 = document.getElementById("b3in1").innerHTML;
-		  var i2 = document.getElementById("b3in2").innerHTML;
-		
+		  var inUseObj = {};
+		  //var GLD = new Date();
+		  var ctObj = {};
+		  var btObj = {};
+		  
+		  var delMode = 0;
+
 			function Menu(elem) {
 				var idnumber = 4;
 				
 				this.switch = function() {
 				  createBlock("sw", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.out = function() {
+				  createBlock("out", idnumber);
 				  dragndrop();
 				  idnumber++;
 				};
@@ -74,6 +96,46 @@
 				  idnumber++;
 				};
 				
+				this.not = function() {
+				  createBlock("not", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.nand = function() {
+				  createBlock("nand", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.nor = function() {
+				  createBlock("nor", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.delay = function() {
+				  createBlock("delay", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.ton = function() {
+				  createBlock("ton", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.rs = function() {
+				  createBlock("rs", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.delm = function() {
+				  delMode = +!delMode;
+				};
+				
 				var self = this;
 
 				elem.onclick = function(e) {
@@ -87,20 +149,69 @@
 			
 			new Menu(menu);
 			
-			function Content(elem) {
+			function ContentClick(elem) {
 								
 				this.startPoint = function() {
 				  event = event || window.event;
 				  oId = event.target.id;
+					if (delMode) {
+						if (confirm("Delete arrow(s) from: " + oId + "?")) {
+							delOutArrow(oId);
+						}
+					}								
 				};
 				
 				this.endPoint = function() {
 				  event = event || window.event;
 				  p2 = event.target.id;
-				  var arrowsDrawerN = $cArrows('#content');	  
-				  arrowsDrawerN.arrow('#'+oId, '#'+p2,
-				  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-				  arrowsArr.push([oId,arrowsDrawerN]);
+				  if (delMode) {
+						if (confirm("Delete arrow to: " + p2 + "?")) {
+							delInArrow([p2]);
+						}
+				  }
+				  else {
+				    if (!inUseObj[p2]) {
+					  var arrowsDrawerN = $cArrows('#content');	  
+					  arrowsDrawerN.arrow('#'+oId, '#'+p2,
+					  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
+					  arrowsArr.push([oId, p2, arrowsDrawerN]);
+					  document.getElementById(p2).innerHTML =
+					  document.getElementById(oId).innerHTML;
+					  inUseObj[p2] = 1;
+				    }
+					else alert("Input is already in use");
+				  }	
+				};
+				
+				this.canBeDel = function() {
+					event = event || window.event;
+					var delBl = event.target.parentElement;
+					var delId = [];
+					if (delMode) {
+						if (confirm("Delete block: " + delBl.id +
+						" and connected arrows?")){
+							 
+							for (var i = 0; i < delBl.childNodes.length; i++) {
+								if (delBl.childNodes[i].className == "out" ||
+									delBl.childNodes[i].className == "in in" + i) {
+									delId.push(delBl.childNodes[i].id);
+								}						
+							}
+							 
+							for (var j = blocksArr.length - 1; j >= 0; j--) {
+								if (blocksArr[j][1] == delId[delId.length-1]) {
+									blocksArr.splice(j,1);
+								}
+							} 
+							
+							delOutArrow(delId[delId.length-1]);
+							
+							delInArrow(delId);	
+							
+							delBl.remove();
+						}
+					
+					} 
 				};
 				
 				var self = this;
@@ -114,39 +225,95 @@
 				};
 		    }
 			
-			new Content(content);
+			new ContentClick(content);
+			
+			function delInArrow(delArr) {
+				for (var k = arrowsArr.length - 1; k >= 0; k--) {
+					for (var l = 0; l < delArr.length; l++){
+						if (arrowsArr[k]) {
+							if (arrowsArr[k][1] == delArr[l]) {
+								delete inUseObj[arrowsArr[k][1]];
+								arrowsArr[k][2].clear();
+								arrowsArr.splice(k,1);
+							}
+						}
+					}
+				} 		
+			}
+			
+			function delOutArrow(delOutId) {
+				for (var k = arrowsArr.length - 1; k >= 0; k--) {
+					if (arrowsArr[k][0] == delOutId) {
+						delete inUseObj[arrowsArr[k][1]];
+						arrowsArr[k][2].clear();
+						arrowsArr.splice(k,1);
+					}
+				}		
+			}
 			
 			function createBlock(blockType, idn) {
+			
 				switch(blockType) {
+				
 				  case "sw":
 					var div = document.createElement('div'),
 						div1 = document.createElement('div'),
-						div2 = document.createElement('div');
+						div2 = document.createElement('div'),
 						btn = document.createElement('button');
-					div.className = "ui-draggable";
+					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "1/0";
 					div2.className = "out";
 					div2.id = "b" + idn + "out";
 					div2.setAttribute("data-action","startPoint");
 					div2.innerHTML = 0;
+					btn.className = "sw-button";
 					btn.innerHTML = "1/0";
 					btn.setAttribute("onclick","init('" + div2.id + "')");
 					document.getElementById("content").appendChild(div);
 					document.getElementById("block"+idn).appendChild(div1);
 					document.getElementById("block"+idn).appendChild(div2);
 					document.getElementById("block"+idn).appendChild(btn);
-				  break;				  
+				  break;
+				  
+				  case "out":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div');
+					div.className = "ui-draggable new";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
+					div1.innerHTML = "OUT";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");					
+					div3.className = "out";
+					div3.id = "b" + idn + "out";
+					div3.setAttribute("data-action","startPoint");
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					
+					blocksArr.push([outBl, div3.id, div2.id]);
+					observer.observe(div, options);
+					
+				  break;
+				  
 				  case "and":
 					var div = document.createElement('div'),
 						div1 = document.createElement('div'),
-						div2 = document.createElement('div');
-						div3 = document.createElement('div');
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div'),
 						div4 = document.createElement('div');
-					div.className = "ui-draggable";
+					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "&";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
@@ -162,16 +329,22 @@
 					document.getElementById("block"+idn).appendChild(div2);
 					document.getElementById("block"+idn).appendChild(div3);
 					document.getElementById("block"+idn).appendChild(div4);
+					
+					blocksArr.push([andBl, div4.id, div2.id, div3.id]);
+					observer.observe(div, options);
+					
 				  break;
+				  
 				  case "or":
 					var div = document.createElement('div'),
 						div1 = document.createElement('div'),
-						div2 = document.createElement('div');
-						div3 = document.createElement('div');
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div'),
 						div4 = document.createElement('div');
-					div.className = "ui-draggable";
+					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "OR";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
@@ -187,16 +360,22 @@
 					document.getElementById("block"+idn).appendChild(div2);
 					document.getElementById("block"+idn).appendChild(div3);
 					document.getElementById("block"+idn).appendChild(div4);
+					
+					blocksArr.push([orBl, div4.id, div2.id, div3.id]);
+					observer.observe(div, options);
+					
 				  break;
+				  
 				  case "xor":
 					var div = document.createElement('div'),
 						div1 = document.createElement('div'),
-						div2 = document.createElement('div');
-						div3 = document.createElement('div');
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div'),
 						div4 = document.createElement('div');
-					div.className = "ui-draggable";
+					div.className = "ui-draggable new";
 					div.id = "block" + idn;
 					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "XOR";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
@@ -212,45 +391,317 @@
 					document.getElementById("block"+idn).appendChild(div2);
 					document.getElementById("block"+idn).appendChild(div3);
 					document.getElementById("block"+idn).appendChild(div4);
+					
+					blocksArr.push([xorBl, div4.id, div2.id, div3.id]);
+					observer.observe(div, options);
+					
+				  break;
+				  
+				  case "not":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div');
+					div.className = "ui-draggable new";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
+					div1.innerHTML = "NOT";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");					
+					div3.className = "out";
+					div3.id = "b" + idn + "out";
+					div3.setAttribute("data-action","startPoint");
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					
+					blocksArr.push([notBl, div3.id, div2.id]);
+					observer.observe(div, options);
+					
+				  break;
+				  
+				  case "nand":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div'),
+						div4 = document.createElement('div');
+					div.className = "ui-draggable new";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
+					div1.innerHTML = "&NOT";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");
+					div3.className = "in in2";
+					div3.id = "b" + idn + "in2";
+					div3.setAttribute("data-action","endPoint");
+					div4.className = "out";
+					div4.id = "b" + idn + "out";
+					div4.setAttribute("data-action","startPoint");
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					document.getElementById("block"+idn).appendChild(div4);
+					
+					blocksArr.push([nandBl, div4.id, div2.id, div3.id]);
+					observer.observe(div, options);
+					
+				  break;
+				  
+				  case "nor":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div'),
+						div4 = document.createElement('div');
+					div.className = "ui-draggable new";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
+					div1.innerHTML = "ORNOT";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");
+					div3.className = "in in2";
+					div3.id = "b" + idn + "in2";
+					div3.setAttribute("data-action","endPoint");
+					div4.className = "out";
+					div4.id = "b" + idn + "out";
+					div4.setAttribute("data-action","startPoint");
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					document.getElementById("block"+idn).appendChild(div4);
+					
+					blocksArr.push([norBl, div4.id, div2.id, div3.id]);
+					observer.observe(div, options);
+					
+				  break;
+				  
+				  case "delay":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div'),
+						input = document.createElement('input'),
+						span = document.createElement('span');
+					div.className = "ui-draggable new";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
+					div1.innerHTML = "DELAY";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");					
+					div3.className = "out";
+					div3.id = "b" + idn + "out";
+					div3.setAttribute("data-action","startPoint");
+					input.id = "b" + idn + "input";
+					input.setAttribute("type","text");
+					span.innerHTML = "S";
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					document.getElementById("block"+idn).appendChild(input);
+					document.getElementById("block"+idn).appendChild(span);
+					
+					blocksArr.push([delayBl, div3.id, div2.id, input.id]);
+					observer.observe(div, options);
+					
+				  break;
+				  
+				  case "ton":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div'),
+						input = document.createElement('input'),
+						span = document.createElement('span');
+					div.className = "ui-draggable new";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
+					div1.innerHTML = "TON";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");					
+					div3.className = "out";
+					div3.id = "b" + idn + "out";
+					div3.setAttribute("data-action","startPoint");
+					input.id = "b" + idn + "input";
+					input.setAttribute("type","text");
+					span.innerHTML = "S";
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					document.getElementById("block"+idn).appendChild(input);
+					document.getElementById("block"+idn).appendChild(span);
+					
+					blocksArr.push([tonBl, div3.id, div2.id, input.id]);
+					observer.observe(div2, options);
+					
+				  break;
+				  
+				  case "rs":
+					var div = document.createElement('div'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div'),
+						div4 = document.createElement('div');
+					div.className = "ui-draggable new";
+					div.id = "block" + idn;
+					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
+					div1.innerHTML = "RS";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");
+					div3.className = "in in2";
+					div3.id = "b" + idn + "in2";
+					div3.setAttribute("data-action","endPoint");
+					div4.className = "out";
+					div4.id = "b" + idn + "out";
+					div4.setAttribute("data-action","startPoint");
+					document.getElementById("content").appendChild(div);
+					document.getElementById("block"+idn).appendChild(div1);
+					document.getElementById("block"+idn).appendChild(div2);
+					document.getElementById("block"+idn).appendChild(div3);
+					document.getElementById("block"+idn).appendChild(div4);
+					
+					blocksArr.push([rsBl, div4.id, div2.id, div3.id]);
+					observer.observe(div, options);
+					
 				  break;
 				}
 			
-			}		
+			}
 			
-			/*function p2pArrow(p2) {
-
-				if (oId == "b1out"){
-					if (p2 == "b3in1" && i1 != 1) {
-						arrowsDrawer1.arrow('#'+oId, '#'+p2,
-						{ arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-						i1 = 1;
-					}
-					if (p2 == "b3in2" && i2 != 1) {
-						arrowsDrawer1.arrow('#'+oId, '#'+p2,
-						{ arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-						i2 = 1;
-					}
+			///////////// MutationObserver section
+			
+			var callback = function(){
+				for (var i = 0; i < blocksArr.length; i++) {
+					blocksArr[i][0](blocksArr[i][1],blocksArr[i][2],blocksArr[i][3]);
+					chColor(blocksArr[i][1]);
+					chIn(blocksArr[i][1]);
 				}
-				if (oId == "b2out"){
-					if (p2 == "b3in1" && i1 != 1) {
-						arrowsDrawer2.arrow('#'+oId, '#'+p2,
-						{ arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-						i1 = 1;
-					}
-					if (p2 == "b3in2" && i2 != 1) {
-						arrowsDrawer2.arrow('#'+oId, '#'+p2,
-						{ arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-						i2 = 1;
-					}
+			};
+			
+			var observer = new MutationObserver(callback);
+			
+			var options = {
+				'childList': true,
+				'subtree': true,
+				'characterData': true
+			}
+			
+			///////////// End of MutationObserver section
+			
+			///////////// Blocks logic section
+			
+			function outBl(out,id1) {
+				var parentBl = document.getElementById(id1).parentElement;
+				var bv1 = document.getElementById(id1).innerHTML;
+				document.getElementById(out).innerHTML = +bv1;
+				bv1 == 1 ? 
+				parentBl.style.background = "radial-gradient(#F7F7F7 0%,green 100%)" :
+				parentBl.style.background = "radial-gradient(#F7F7F7 0%,red 100%)";
+			}
+			
+			function andBl(out,id1,id2) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var bv2 = document.getElementById(id2).innerHTML;
+				document.getElementById(out).innerHTML = +bv1 & +bv2;
+			}
+			
+			function orBl(out,id1,id2) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var bv2 = document.getElementById(id2).innerHTML;
+				document.getElementById(out).innerHTML = +bv1 | +bv2;
+			}
+			
+			function xorBl(out,id1,id2) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var bv2 = document.getElementById(id2).innerHTML;
+				document.getElementById(out).innerHTML = +bv1 ^ +bv2;
+			}
+			
+			function notBl(out,id1) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				document.getElementById(out).innerHTML = +(!+bv1);
+			}
+			
+			function nandBl(out,id1,id2) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var bv2 = document.getElementById(id2).innerHTML;
+				document.getElementById(out).innerHTML = +!(+bv1 & +bv2);
+			}
+			
+			function norBl(out,id1,id2) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var bv2 = document.getElementById(id2).innerHTML;
+				document.getElementById(out).innerHTML = +!(+bv1 | +bv2);
+			}
+			
+			function delayBl(out,id1,inpId) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var delay = document.getElementById(inpId).value * 1000;
+				function initDelay() {
+					document.getElementById(out).innerHTML = +bv1;
+				}
+				setTimeout(initDelay, delay);
+			}
+			
+			function tonBl(out,id1,inpId) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var delay = document.getElementById(inpId).value * 1000;
+				var timer;
+				var D = new Date();
+				
+				clearTimeout(ctObj[out]);
+				
+				function initDelay() {			
+					 document.getElementById(out).innerHTML = 1;
+					 chColor(out);
+					 chIn(out);
+					 var cd = new Date();
+					 var dt = (cd - D)/1000;
+					 console.log(ctObj,ctObj[out],dt);
+					 btObj[out] = 1;
+				}
+				if (bv1 == 0) {
+					document.getElementById(out).innerHTML = 0;
+					btObj[out] = 0;
 					
 				}
-			}*/
-			
-			function andbl(id1,id2) {
-				var bv1 = document.getElementById(id1).innerHTML;
-				var bv2 = document.getElementById(id2).innerHTML;	
-				document.getElementById("b3out").innerHTML = Number(bv1) && Number(bv2);
+				if (bv1 == 1 && !btObj[out]){
+					timer = setTimeout(initDelay, delay);
+					ctObj[out] = timer;
+				}
+				
+				
+				//console.log(ctObj,ctObj[out]);
 			}
+			
+			function rsBl(out,id1,id2) {
+				var x1 = +document.getElementById(id1).innerHTML;
+				var x2 = +document.getElementById(id2).innerHTML;
+				var y = +document.getElementById(out).innerHTML;
+
+				y =  !(!(x1 || y) || x2); 
+							
+				document.getElementById(out).innerHTML = +y;
+			}
+			
+			///////////// End of Blocks logic section
 			
 			function chColor(outId) {
 				var bc = document.getElementById(outId);
@@ -259,9 +710,9 @@
 				  bc.style.background = 'red';
 				  for (var i = 0; i < arrowsArr.length; i++) {
 					if (outId == arrowsArr[i][0]) {
-					 arrowsArr[i][1].updateOptions(
+					 arrowsArr[i][2].updateOptions(
 				     { render: {strokeStyle:'red'}})
-				     arrowsArr[i][1].redraw();
+				     arrowsArr[i][2].redraw();
 					} 
 				  }
 				}
@@ -269,48 +720,52 @@
 				  bc.style.background = 'green';
 				  for (var i = 0; i < arrowsArr.length; i++) {
 					if (outId == arrowsArr[i][0]) {
-					 arrowsArr[i][1].updateOptions(
+					 arrowsArr[i][2].updateOptions(
 				     { render: {strokeStyle:'green'}})
-				     arrowsArr[i][1].redraw();
+				     arrowsArr[i][2].redraw();
 					} 
 				  }
 				} 
-			}
-		  //window.alert (Number(bv1) && Number(bv2));		  
+			}	  
 		  
-		  function init(outId){
-			  var bv = document.getElementById(outId).innerHTML;
-			  if (bv == 0) {
+		    function init(outId){
+				var bv = document.getElementById(outId).innerHTML;
+				if (bv == 0) {
 				  bv = 1;
-			  }
-			  else {
-				bv = 0;
-			  }				
-			  document.getElementById(outId).innerHTML = bv;
-			  chColor(outId);
-			  if (i1==1 && i2==1){
-				andbl("b1out","b2out");
-				chColor("b3out");
-			  } 
-		  }
-		     
-		  // Рисуем стрелки .arrow(from, to)
-		  /*arrowsDrawer1.arrow('#block1 .out', '#block3 .in1',
-		  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-		  arrowsDrawer2.arrow('#b2out', '#b3in2',
-		  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});*/
+				}
+				else {
+					bv = 0;
+				}
+				
+				document.getElementById(outId).innerHTML = bv;
+				chColor(outId);
+				chIn(outId);
+			  			  
+		    }
 		  
-		  // Перерисовка при перемещении с jQuery Ui
+		    function chIn(outId) {
+				var bv = document.getElementById(outId).innerHTML;
+				var p, idx;
+				for (var i = 0; i < arrowsArr.length; i++) {
+					if(arrowsArr[i].indexOf(outId) == 0) {
+						p = i;
+						idx = arrowsArr[p][1];
+						document.getElementById(idx).innerHTML = bv;
+						chColor(idx);	
+					}
+				}
+			  		  		
+		    }
+		  
+		  // Redrawing draggable elements with jQuery Ui
 		  function dragndrop() {
 			$( "#content .ui-draggable" ).draggable({
 			  containment: "#content",
 			  scroll: false,
 			  cursor: 'move',
 			  drag: function( event, ui ) {
-				arrowsDrawer1.redraw();
-				arrowsDrawer2.redraw();
 				for (var i = 0; i < arrowsArr.length; i++) {
-				 arrowsArr[i][1].redraw();
+				 arrowsArr[i][2].redraw();
 				}
 			  }
 			});			
