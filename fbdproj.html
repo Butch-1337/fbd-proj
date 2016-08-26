@@ -154,11 +154,22 @@
 				this.startPoint = function() {
 				  event = event || window.event;
 				  oId = event.target.id;
+					if (delMode) {
+						if (confirm("Delete arrow(s) from: " + oId + "?")) {
+							delOutArrow(oId);
+						}
+					}								
 				};
 				
 				this.endPoint = function() {
 				  event = event || window.event;
 				  p2 = event.target.id;
+				  if (delMode) {
+						if (confirm("Delete arrow to: " + p2 + "?")) {
+							delInArrow([p2]);
+						}
+				  }
+				  else {
 				    if (!inUseObj[p2]) {
 					  var arrowsDrawerN = $cArrows('#content');	  
 					  arrowsDrawerN.arrow('#'+oId, '#'+p2,
@@ -169,6 +180,7 @@
 					  inUseObj[p2] = 1;
 				    }
 					else alert("Input is already in use");
+				  }	
 				};
 				
 				this.canBeDel = function() {
@@ -176,7 +188,8 @@
 					var delBl = event.target.parentElement;
 					var delId = [];
 					if (delMode) {
-						if (confirm("Delete block: " + delBl.id + "?")){
+						if (confirm("Delete block: " + delBl.id +
+						" and connected arrows?")){
 							 
 							for (var i = 0; i < delBl.childNodes.length; i++) {
 								if (delBl.childNodes[i].className == "out" ||
@@ -185,31 +198,15 @@
 								}						
 							}
 							 
-							for (var j = 0; j < blocksArr.length; j++) {
+							for (var j = blocksArr.length - 1; j >= 0; j--) {
 								if (blocksArr[j][1] == delId[delId.length-1]) {
 									blocksArr.splice(j,1);
 								}
 							} 
 							
-							for (var k = 0; k < arrowsArr.length; k++) {
-								if (arrowsArr[k][0] == delId[delId.length-1]) {
-									delete inUseObj[arrowsArr[k][1]];
-									arrowsArr[k][2].clear();
-									arrowsArr.splice(k,1);
-								}
-							} 
+							delOutArrow(delId[delId.length-1]);
 							
-							for (var k = 0; k < arrowsArr.length; k++) {
-								for (var l = 0; l < delId.length-1; l++){
-								if (arrowsArr[k])
-									if (arrowsArr[k][1] == delId[l]) {
-										delete inUseObj[arrowsArr[k][1]];
-										arrowsArr[k][2].clear();
-										arrowsArr.splice(k,1);
-									}
-									
-								}
-							} 
+							delInArrow(delId);	
 							
 							delBl.remove();
 						}
@@ -229,6 +226,30 @@
 		    }
 			
 			new ContentClick(content);
+			
+			function delInArrow(delArr) {
+				for (var k = arrowsArr.length - 1; k >= 0; k--) {
+					for (var l = 0; l < delArr.length; l++){
+						if (arrowsArr[k]) {
+							if (arrowsArr[k][1] == delArr[l]) {
+								delete inUseObj[arrowsArr[k][1]];
+								arrowsArr[k][2].clear();
+								arrowsArr.splice(k,1);
+							}
+						}
+					}
+				} 		
+			}
+			
+			function delOutArrow(delOutId) {
+				for (var k = arrowsArr.length - 1; k >= 0; k--) {
+					if (arrowsArr[k][0] == delOutId) {
+						delete inUseObj[arrowsArr[k][1]];
+						arrowsArr[k][2].clear();
+						arrowsArr.splice(k,1);
+					}
+				}		
+			}
 			
 			function createBlock(blockType, idn) {
 			
