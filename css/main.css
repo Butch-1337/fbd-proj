@@ -83,6 +83,7 @@ button:hover {
 	margin: 10px auto;
 	background: #eaeaea;
 	z-index: -1;
+	position: relative;
 }
 
 .ui-draggable {
@@ -104,7 +105,7 @@ button:hover {
 	-webkit-border-radius: 10%;
 	   -moz-border-radius: 10%;
 	        border-radius: 10%;
-	position: fixed;
+	position: absolute;
 }
 
 .ui-draggable-dragging { 
@@ -161,9 +162,9 @@ button:hover {
 	margin-top: 140px;
 }
 
-#block3 {
+/*#block3 {
 	margin-left: 400px;
-}
+}*/
 
 div input {
 	margin: 5px auto 20px;
@@ -177,7 +178,6 @@ div span {
 .new {
 	top: 30%;
 	left: 50%;
-	position: fixed;
 	-webkit-animation-name: fall; /* Chrome, Safari, Opera */
 	        animation-name: fall;
     -webkit-animation-duration: 1s; /* Chrome, Safari, Opera */

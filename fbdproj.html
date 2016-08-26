@@ -48,6 +48,7 @@
 		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script> -->
 		<script src="lib/jquery-1.5.min.js"></script>
 		<script src="lib/jquery-ui.min.js"></script>
+		<script src="lib/jquery.ui.touch-punch.min.js"></script>
 		<script src="lib/arrows.1.0.0.js"></script>
 		<script>
 		
@@ -200,11 +201,13 @@
 							
 							for (var k = 0; k < arrowsArr.length; k++) {
 								for (var l = 0; l < delId.length-1; l++){
+								if (arrowsArr[k])
 									if (arrowsArr[k][1] == delId[l]) {
 										delete inUseObj[arrowsArr[k][1]];
 										arrowsArr[k][2].clear();
 										arrowsArr.splice(k,1);
 									}
+									
 								}
 							} 
 							
