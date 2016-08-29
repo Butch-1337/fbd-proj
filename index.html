@@ -753,10 +753,13 @@
 				var x1 = +document.getElementById(id1).innerHTML;
 				var x2 = +document.getElementById(id2).innerHTML;
 				var y = +document.getElementById(out).innerHTML;
-
-				y =  !(!(x1 || y) || x2); 
-							
-				document.getElementById(out).innerHTML = +y;
+				
+				setTimeout(yout, 400);
+				function yout() {
+					y =  !(!(x1 || y) || x2);
+					document.getElementById(out).innerHTML = +y;
+				}
+		
 			}
 			
 			///////////// End of Blocks logic section
