@@ -1,6 +1,9 @@
 ﻿<!doctype html>
 <html lang="ru">
 	<head>
+		<meta charset="utf-8">
+		<title>FBD emulator</title>
+		<script src="lib/modernizr-custom.js"></script>
 		<link rel="stylesheet" href="css/main.css" />	
 	</head>
 	<body>
@@ -57,6 +60,12 @@
 		<script src="lib/jquery.ui.touch-punch.min.js"></script>
 		<script src="lib/arrows.1.0.0.js"></script>
 		<script>
+		
+			if (Modernizr.canvas) {
+			  console.log("support canvas +");
+			} else {
+			  alert("Your browser does not support canvas");
+			}
 		
 		  var arrowsArr = [];
 		  var blocksArr = [];
@@ -582,7 +591,9 @@
 					div3.id = "b" + idn + "out";
 					div3.setAttribute("data-action","startPoint");
 					input.id = "b" + idn + "input";
-					input.setAttribute("type","text");
+					input.setAttribute("type","number");
+					input.setAttribute("min","0");
+					input.setAttribute("value","1.5");
 					span.innerHTML = "S";
 					document.getElementById("content").appendChild(div);
 					document.getElementById("Block"+idn).appendChild(spanId);
