@@ -64,9 +64,21 @@
 			if (Modernizr.canvas) {
 			  console.log("support canvas +");
 			} else {
-			  alert("Your browser does not support canvas");
+			  alert("Your browser does not support canvas!");
 			}
-		
+			
+			if (Modernizr.mutationobserver) {
+			  console.log("support mutationobserver +");
+			} else {
+			  alert("Your browser does not support mutationobserver!");
+			}
+			
+			if (Modernizr.cssgradients) {
+			  console.log("support cssgradients +");
+			} else {
+			  alert("Your browser does not support cssgradients!");
+			}			
+			
 		  var arrowsArr = [];
 		  var blocksArr = [];
 		  var oId;
@@ -149,6 +161,17 @@
 				
 				this.delm = function() {
 				  delMode = +!delMode;
+				  var blNameObj = document.getElementsByClassName("block-name");
+				  var blOutObj = document.getElementsByClassName("out");
+				  var blInObj = document.getElementsByClassName("in");
+				  
+					  for (var i=0; i < blNameObj.length; i++) {
+						blNameObj[i].classList.toggle("del-cursor");
+						if(blOutObj.length) blOutObj[i].classList.toggle("del-cursor");
+						if(blInObj.length) blInObj[i].classList.toggle("del-cursor");
+						 
+					  }
+				 
 				};
 				
 				var self = this;

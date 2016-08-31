@@ -121,7 +121,7 @@ button:hover {
 }
 
 .ui-draggable .block-name:hover {
-	cursor: default;
+	/*cursor: default;*/
 }
 
 .in {
@@ -295,4 +295,8 @@ div span {
 .bl-span-id {
 	line-height: 20px;
 	color: #777;
+}
+
+.del-cursor {
+	cursor: url(delete-cross.png), pointer;
 }
