@@ -84,7 +84,7 @@
 		  var oId;
 		  var p2;
 		  var inUseObj = {};
-		  //var GLD = new Date();
+		  
 		  var ctObj = {};
 		  var btObj = {};
 		  
@@ -161,17 +161,49 @@
 				
 				this.delm = function() {
 				  delMode = +!delMode;
+				  var button = document.getElementsByClassName("menu-button");				  
 				  var blNameObj = document.getElementsByClassName("block-name");
 				  var blOutObj = document.getElementsByClassName("out");
 				  var blInObj = document.getElementsByClassName("in");
 				  
-					  for (var i=0; i < blNameObj.length; i++) {
-						blNameObj[i].classList.toggle("del-cursor");
-						if(blOutObj.length) blOutObj[i].classList.toggle("del-cursor");
-						if(blInObj.length) blInObj[i].classList.toggle("del-cursor");
-						 
+				  if (delMode){
+					  for (var i = 0; i < blNameObj.length; i++) {					  
+						blNameObj[i].classList.add("del-cursor");
 					  }
-				 
+					  
+					  for (var i = 0; i < blOutObj.length; i++) {					  
+						blOutObj[i].classList.add("del-cursor");	 
+					  }
+					  
+					  for (var j = 0; j < blInObj.length; j++) {
+						blInObj[j].classList.add("del-cursor");
+					  }
+					  
+					  for (var k = 0; k < button.length; k++) {
+						//button[k].style.display = "none";
+						button[k].setAttribute("disabled","");
+					  }	  
+					  
+				  }
+				  else {
+					  for (var i = 0; i < blNameObj.length; i++) {					  
+						blNameObj[i].classList.remove("del-cursor");
+					  }
+					  
+					  for (var i = 0; i < blOutObj.length; i++) {					  
+						blOutObj[i].classList.remove("del-cursor");	 
+					  }
+					  
+					  for (var j = 0; j < blInObj.length; j++) {
+						blInObj[j].classList.remove("del-cursor");
+					  }
+					  
+					  for (var k = 0; k < button.length; k++) {
+						//button[k].style.display = "inline-block";
+						button[k].removeAttribute("disabled","");
+					  }
+					  
+				  }
 				};
 				
 				var self = this;
@@ -227,11 +259,11 @@
 					var delId = [];
 					if (delMode) {
 						if (confirm("Delete block: " + delBl.id +
-						" and connected arrows?")){
-							 
-							for (var i = 0; i < delBl.childNodes.length; i++) {								
-								if (delBl.childNodes[i].className == "out" ||
-									delBl.childNodes[i].className == "in in" + (i - 1)) {
+						" and connected arrows?")){					 
+							for (var i = 0; i < delBl.childNodes.length; i++) {							
+								if (delBl.childNodes[i].className == "out del-cursor" ||
+								delBl.childNodes[i].className == "in in" + (i - 1)
+								+ " del-cursor") {
 									delId.push(delBl.childNodes[i].id);
 								}						
 							}
@@ -679,18 +711,37 @@
 			
 			///////////// MutationObserver section
 			
-			var callback = function(){
-				for (var i = 0; i < blocksArr.length; i++) {
+			var callback = function(mutationRecordsList){
+			
+			var mutId = []
+			//console.log(mutationRecordsList);
+			mutationRecordsList.forEach(function(mutationRecord, i) {
+				//console.log("Type of mutation: " + mutationRecord.type);
+				//console.log("Target.id: " + mutationRecordsList[i].target.parentNode.id);
+				mutId.push(mutationRecordsList[i].target.parentNode.id);
+			});			
+			
+				for (var i = 0; i < mutId.length; i++) {
+					for (var j = 0; j < blocksArr.length; j++) {
+						if (blocksArr[j][2] == mutId[i]  ||
+						    blocksArr[j][3] == mutId[i]) {
+							blocksArr[j][0](blocksArr[j][1],blocksArr[j][2],blocksArr[j][3]);
+							chColor(blocksArr[j][1]);
+							chIn(blocksArr[j][1]);
+						} 		
+					}
+				}		
+				/*for (var i = 0; i < blocksArr.length; i++) {
 					blocksArr[i][0](blocksArr[i][1],blocksArr[i][2],blocksArr[i][3]);
-					chColor(blocksArr[i][1]);
-					chIn(blocksArr[i][1]);
-				}
+					//chColor(blocksArr[i][1]);
+					//chIn(blocksArr[i][1]);
+				}*/				
 			};
 			
 			var observer = new MutationObserver(callback);
 			
 			var options = {
-				'childList': true,
+				//'childList': true,
 				'subtree': true,
 				'characterData': true
 			}
@@ -756,17 +807,16 @@
 				var bv1 = document.getElementById(id1).innerHTML;
 				var delay = document.getElementById(inpId).value * 1000;
 				var timer;
-				var D = new Date();
-				
+				//var D = new Date();							
 				clearTimeout(ctObj[out]);
 				
 				function initDelay() {			
 					 document.getElementById(out).innerHTML = 1;
 					 chColor(out);
 					 chIn(out);
-					 var cd = new Date();
+					 /*var cd = new Date();
 					 var dt = (cd - D)/1000;
-					 console.log(ctObj,ctObj[out],dt);
+					 console.log(ctObj,ctObj[out],dt);*/
 					 btObj[out] = 1;
 				}
 				if (bv1 == 0) {
@@ -778,11 +828,10 @@
 					timer = setTimeout(initDelay, delay);
 					ctObj[out] = timer;
 				}
-				
-				
+								
 				//console.log(ctObj,ctObj[out]);
 			}
-			
+						
 			function rsBl(out,id1,id2) {
 				var x1 = +document.getElementById(id1).innerHTML;
 				var x2 = +document.getElementById(id2).innerHTML;
@@ -792,10 +841,12 @@
 				function yout() {
 					y =  !(!(x1 || y) || x2);
 					document.getElementById(out).innerHTML = +y;
+					chColor(out);
+					chIn(out);
 				}
 		
 			}
-			
+						
 			///////////// End of Blocks logic section
 			
 			function chColor(outId) {
