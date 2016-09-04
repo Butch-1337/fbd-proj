@@ -1,12 +1,16 @@
 ﻿<!doctype html>
 <html lang="ru">
 	<head>
+		<meta charset="utf-8">
+		<title>FBD emulator</title>
+		<script src="lib/modernizr-custom.js"></script>
 		<link rel="stylesheet" href="css/main.css" />	
 	</head>
 	<body>
+	<noscript>Sorry, your browser does not support JavaScript!</noscript>
 	<div id = "main"> 
 		<div id = "menu" class="borders">
-			<span>Blocks<span>
+			<span>Blocks</span>
 			<button class="menu-button" data-action="switch">1/0</button>
 			<button class="menu-button" data-action="out">OUT</button>
 			<button class="menu-button" data-action="and"> & </button>
@@ -18,22 +22,27 @@
 			<button class="menu-button" data-action="delay"> DELAY </button>
 			<button class="menu-button" data-action="ton"> TON </button>
 			<button class="menu-button" data-action="rs"> RS </button>
-			<span>Delete mode<span>
+			<span>Delete mode</span>
 			<div id = "delm-div">
 				<input type="checkbox" id="del-mode" data-action="delm"/>
 				<label for="del-mode"></label>
-			</div>
+			</div>			
 		</div>
-		<div id="content" class="borders">	
-		  <div class="ui-draggable" id="block1" >
+		<div id="content" class="borders">
+			<!-- <button class="menu-button fullscr-btn"
+			onclick="fullscreen(document.documentElement);return false;">
+			</button> -->
+		  <div class="ui-draggable" id="Block1">
+		    <span class="bl-span-id">Block1</span>
 			<div class="block-name" data-action="canBeDel"> 1/0 </div>
 			<div class="out" id="b1out" data-action="startPoint">0</div>
 			<button class="sw-button" onclick="init('b1out')">1/0</button>
 		  </div>
-		  <div class="ui-draggable" id="block2">
+		  <div class="ui-draggable" id="Block2">
+			<span class="bl-span-id">Block2</span>
 			<div class="block-name" data-action="canBeDel"> 1/0 </div>
 			<div class="out" id="b2out" data-action="startPoint">0</div>
-			<button class="sw-button" onclick="init('b2out')" >1/0</button>
+			<button class="sw-button" onclick="init('b2out')">1/0</button>
 		  </div>
 		  <!-- <div class="ui-draggable" id="block3">
 			<div class="block-name"> & </div>
@@ -52,12 +61,30 @@
 		<script src="lib/arrows.1.0.0.js"></script>
 		<script>
 		
+			if (Modernizr.canvas) {
+			  console.log("support canvas +");
+			} else {
+			  alert("Your browser does not support canvas!");
+			}
+			
+			if (Modernizr.mutationobserver) {
+			  console.log("support mutationobserver +");
+			} else {
+			  alert("Your browser does not support mutationobserver!");
+			}
+			
+			if (Modernizr.cssgradients) {
+			  console.log("support cssgradients +");
+			} else {
+			  alert("Your browser does not support cssgradients!");
+			}			
+			
 		  var arrowsArr = [];
 		  var blocksArr = [];
 		  var oId;
 		  var p2;
 		  var inUseObj = {};
-		  //var GLD = new Date();
+		  
 		  var ctObj = {};
 		  var btObj = {};
 		  
@@ -134,6 +161,49 @@
 				
 				this.delm = function() {
 				  delMode = +!delMode;
+				  var button = document.getElementsByClassName("menu-button");				  
+				  var blNameObj = document.getElementsByClassName("block-name");
+				  var blOutObj = document.getElementsByClassName("out");
+				  var blInObj = document.getElementsByClassName("in");
+				  
+				  if (delMode){
+					  for (var i = 0; i < blNameObj.length; i++) {					  
+						blNameObj[i].classList.add("del-cursor");
+					  }
+					  
+					  for (var i = 0; i < blOutObj.length; i++) {					  
+						blOutObj[i].classList.add("del-cursor");	 
+					  }
+					  
+					  for (var j = 0; j < blInObj.length; j++) {
+						blInObj[j].classList.add("del-cursor");
+					  }
+					  
+					  for (var k = 0; k < button.length; k++) {
+						//button[k].style.display = "none";
+						button[k].setAttribute("disabled","");
+					  }	  
+					  
+				  }
+				  else {
+					  for (var i = 0; i < blNameObj.length; i++) {					  
+						blNameObj[i].classList.remove("del-cursor");
+					  }
+					  
+					  for (var i = 0; i < blOutObj.length; i++) {					  
+						blOutObj[i].classList.remove("del-cursor");	 
+					  }
+					  
+					  for (var j = 0; j < blInObj.length; j++) {
+						blInObj[j].classList.remove("del-cursor");
+					  }
+					  
+					  for (var k = 0; k < button.length; k++) {
+						//button[k].style.display = "inline-block";
+						button[k].removeAttribute("disabled","");
+					  }
+					  
+				  }
 				};
 				
 				var self = this;
@@ -189,11 +259,11 @@
 					var delId = [];
 					if (delMode) {
 						if (confirm("Delete block: " + delBl.id +
-						" and connected arrows?")){
-							 
-							for (var i = 0; i < delBl.childNodes.length; i++) {
-								if (delBl.childNodes[i].className == "out" ||
-									delBl.childNodes[i].className == "in in" + i) {
+						" and connected arrows?")){					 
+							for (var i = 0; i < delBl.childNodes.length; i++) {							
+								if (delBl.childNodes[i].className == "out del-cursor" ||
+								delBl.childNodes[i].className == "in in" + (i - 1)
+								+ " del-cursor") {
 									delId.push(delBl.childNodes[i].id);
 								}						
 							}
@@ -204,7 +274,7 @@
 								}
 							} 
 							
-							delOutArrow(delId[delId.length-1]);
+							delOutArrow(delId[delId.length-1]);							
 							
 							delInArrow(delId);	
 							
@@ -257,11 +327,14 @@
 				
 				  case "sw":
 					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
 						div1 = document.createElement('div'),
 						div2 = document.createElement('div'),
 						btn = document.createElement('button');
 					div.className = "ui-draggable new";
-					div.id = "block" + idn;
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;
 					div1.className = "block-name";
 					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "1/0";
@@ -273,18 +346,22 @@
 					btn.innerHTML = "1/0";
 					btn.setAttribute("onclick","init('" + div2.id + "')");
 					document.getElementById("content").appendChild(div);
-					document.getElementById("block"+idn).appendChild(div1);
-					document.getElementById("block"+idn).appendChild(div2);
-					document.getElementById("block"+idn).appendChild(btn);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(btn);
 				  break;
 				  
 				  case "out":
 					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
 						div1 = document.createElement('div'),
 						div2 = document.createElement('div'),
 						div3 = document.createElement('div');
 					div.className = "ui-draggable new";
-					div.id = "block" + idn;
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
 					div1.className = "block-name";
 					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "OUT";
@@ -295,9 +372,10 @@
 					div3.id = "b" + idn + "out";
 					div3.setAttribute("data-action","startPoint");
 					document.getElementById("content").appendChild(div);
-					document.getElementById("block"+idn).appendChild(div1);
-					document.getElementById("block"+idn).appendChild(div2);
-					document.getElementById("block"+idn).appendChild(div3);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
 					
 					blocksArr.push([outBl, div3.id, div2.id]);
 					observer.observe(div, options);
@@ -306,12 +384,15 @@
 				  
 				  case "and":
 					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
 						div1 = document.createElement('div'),
 						div2 = document.createElement('div'),
 						div3 = document.createElement('div'),
 						div4 = document.createElement('div');
 					div.className = "ui-draggable new";
-					div.id = "block" + idn;
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
 					div1.className = "block-name";
 					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "&";
@@ -325,10 +406,11 @@
 					div4.id = "b" + idn + "out";
 					div4.setAttribute("data-action","startPoint");
 					document.getElementById("content").appendChild(div);
-					document.getElementById("block"+idn).appendChild(div1);
-					document.getElementById("block"+idn).appendChild(div2);
-					document.getElementById("block"+idn).appendChild(div3);
-					document.getElementById("block"+idn).appendChild(div4);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
+					document.getElementById("Block"+idn).appendChild(div4);
 					
 					blocksArr.push([andBl, div4.id, div2.id, div3.id]);
 					observer.observe(div, options);
@@ -337,12 +419,15 @@
 				  
 				  case "or":
 					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
 						div1 = document.createElement('div'),
 						div2 = document.createElement('div'),
 						div3 = document.createElement('div'),
 						div4 = document.createElement('div');
 					div.className = "ui-draggable new";
-					div.id = "block" + idn;
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
 					div1.className = "block-name";
 					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "OR";
@@ -356,10 +441,11 @@
 					div4.id = "b" + idn + "out";
 					div4.setAttribute("data-action","startPoint");
 					document.getElementById("content").appendChild(div);
-					document.getElementById("block"+idn).appendChild(div1);
-					document.getElementById("block"+idn).appendChild(div2);
-					document.getElementById("block"+idn).appendChild(div3);
-					document.getElementById("block"+idn).appendChild(div4);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
+					document.getElementById("Block"+idn).appendChild(div4);
 					
 					blocksArr.push([orBl, div4.id, div2.id, div3.id]);
 					observer.observe(div, options);
@@ -368,12 +454,15 @@
 				  
 				  case "xor":
 					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
 						div1 = document.createElement('div'),
 						div2 = document.createElement('div'),
 						div3 = document.createElement('div'),
 						div4 = document.createElement('div');
 					div.className = "ui-draggable new";
-					div.id = "block" + idn;
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
 					div1.className = "block-name";
 					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "XOR";
@@ -387,10 +476,11 @@
 					div4.id = "b" + idn + "out";
 					div4.setAttribute("data-action","startPoint");
 					document.getElementById("content").appendChild(div);
-					document.getElementById("block"+idn).appendChild(div1);
-					document.getElementById("block"+idn).appendChild(div2);
-					document.getElementById("block"+idn).appendChild(div3);
-					document.getElementById("block"+idn).appendChild(div4);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
+					document.getElementById("Block"+idn).appendChild(div4);
 					
 					blocksArr.push([xorBl, div4.id, div2.id, div3.id]);
 					observer.observe(div, options);
@@ -399,11 +489,14 @@
 				  
 				  case "not":
 					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
 						div1 = document.createElement('div'),
 						div2 = document.createElement('div'),
 						div3 = document.createElement('div');
 					div.className = "ui-draggable new";
-					div.id = "block" + idn;
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
 					div1.className = "block-name";
 					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "NOT";
@@ -414,9 +507,10 @@
 					div3.id = "b" + idn + "out";
 					div3.setAttribute("data-action","startPoint");
 					document.getElementById("content").appendChild(div);
-					document.getElementById("block"+idn).appendChild(div1);
-					document.getElementById("block"+idn).appendChild(div2);
-					document.getElementById("block"+idn).appendChild(div3);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
 					
 					blocksArr.push([notBl, div3.id, div2.id]);
 					observer.observe(div, options);
@@ -425,12 +519,15 @@
 				  
 				  case "nand":
 					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
 						div1 = document.createElement('div'),
 						div2 = document.createElement('div'),
 						div3 = document.createElement('div'),
 						div4 = document.createElement('div');
 					div.className = "ui-draggable new";
-					div.id = "block" + idn;
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
 					div1.className = "block-name";
 					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "&NOT";
@@ -444,10 +541,11 @@
 					div4.id = "b" + idn + "out";
 					div4.setAttribute("data-action","startPoint");
 					document.getElementById("content").appendChild(div);
-					document.getElementById("block"+idn).appendChild(div1);
-					document.getElementById("block"+idn).appendChild(div2);
-					document.getElementById("block"+idn).appendChild(div3);
-					document.getElementById("block"+idn).appendChild(div4);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
+					document.getElementById("Block"+idn).appendChild(div4);
 					
 					blocksArr.push([nandBl, div4.id, div2.id, div3.id]);
 					observer.observe(div, options);
@@ -456,12 +554,15 @@
 				  
 				  case "nor":
 					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
 						div1 = document.createElement('div'),
 						div2 = document.createElement('div'),
 						div3 = document.createElement('div'),
 						div4 = document.createElement('div');
 					div.className = "ui-draggable new";
-					div.id = "block" + idn;
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
 					div1.className = "block-name";
 					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "ORNOT";
@@ -475,10 +576,11 @@
 					div4.id = "b" + idn + "out";
 					div4.setAttribute("data-action","startPoint");
 					document.getElementById("content").appendChild(div);
-					document.getElementById("block"+idn).appendChild(div1);
-					document.getElementById("block"+idn).appendChild(div2);
-					document.getElementById("block"+idn).appendChild(div3);
-					document.getElementById("block"+idn).appendChild(div4);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
+					document.getElementById("Block"+idn).appendChild(div4);
 					
 					blocksArr.push([norBl, div4.id, div2.id, div3.id]);
 					observer.observe(div, options);
@@ -487,13 +589,16 @@
 				  
 				  case "delay":
 					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
 						div1 = document.createElement('div'),
 						div2 = document.createElement('div'),
 						div3 = document.createElement('div'),
 						input = document.createElement('input'),
 						span = document.createElement('span');
 					div.className = "ui-draggable new";
-					div.id = "block" + idn;
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
 					div1.className = "block-name";
 					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "DELAY";
@@ -507,11 +612,12 @@
 					input.setAttribute("type","text");
 					span.innerHTML = "S";
 					document.getElementById("content").appendChild(div);
-					document.getElementById("block"+idn).appendChild(div1);
-					document.getElementById("block"+idn).appendChild(div2);
-					document.getElementById("block"+idn).appendChild(div3);
-					document.getElementById("block"+idn).appendChild(input);
-					document.getElementById("block"+idn).appendChild(span);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
+					document.getElementById("Block"+idn).appendChild(input);
+					document.getElementById("Block"+idn).appendChild(span);
 					
 					blocksArr.push([delayBl, div3.id, div2.id, input.id]);
 					observer.observe(div, options);
@@ -520,13 +626,16 @@
 				  
 				  case "ton":
 					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
 						div1 = document.createElement('div'),
 						div2 = document.createElement('div'),
 						div3 = document.createElement('div'),
 						input = document.createElement('input'),
 						span = document.createElement('span');
 					div.className = "ui-draggable new";
-					div.id = "block" + idn;
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
 					div1.className = "block-name";
 					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "TON";
@@ -537,14 +646,17 @@
 					div3.id = "b" + idn + "out";
 					div3.setAttribute("data-action","startPoint");
 					input.id = "b" + idn + "input";
-					input.setAttribute("type","text");
+					input.setAttribute("type","number");
+					input.setAttribute("min","0");
+					input.setAttribute("value","1.5");
 					span.innerHTML = "S";
 					document.getElementById("content").appendChild(div);
-					document.getElementById("block"+idn).appendChild(div1);
-					document.getElementById("block"+idn).appendChild(div2);
-					document.getElementById("block"+idn).appendChild(div3);
-					document.getElementById("block"+idn).appendChild(input);
-					document.getElementById("block"+idn).appendChild(span);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
+					document.getElementById("Block"+idn).appendChild(input);
+					document.getElementById("Block"+idn).appendChild(span);
 					
 					blocksArr.push([tonBl, div3.id, div2.id, input.id]);
 					observer.observe(div2, options);
@@ -553,29 +665,41 @@
 				  
 				  case "rs":
 					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
 						div1 = document.createElement('div'),
 						div2 = document.createElement('div'),
 						div3 = document.createElement('div'),
 						div4 = document.createElement('div');
+						span1 = document.createElement('span');
+						span2 = document.createElement('span');
 					div.className = "ui-draggable new";
-					div.id = "block" + idn;
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
 					div1.className = "block-name";
 					div1.setAttribute("data-action","canBeDel");
 					div1.innerHTML = "RS";
 					div2.className = "in in1";
 					div2.id = "b" + idn + "in1";
 					div2.setAttribute("data-action","endPoint");
+					span1.className = "i-span1";
+					span1.innerHTML = "S";
 					div3.className = "in in2";
 					div3.id = "b" + idn + "in2";
 					div3.setAttribute("data-action","endPoint");
+					span2.className = "i-span2";
+					span2.innerHTML = "R";
 					div4.className = "out";
 					div4.id = "b" + idn + "out";
 					div4.setAttribute("data-action","startPoint");
 					document.getElementById("content").appendChild(div);
-					document.getElementById("block"+idn).appendChild(div1);
-					document.getElementById("block"+idn).appendChild(div2);
-					document.getElementById("block"+idn).appendChild(div3);
-					document.getElementById("block"+idn).appendChild(div4);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
+					document.getElementById("Block"+idn).appendChild(div4);
+					document.getElementById("Block"+idn).appendChild(span1);
+					document.getElementById("Block"+idn).appendChild(span2);
 					
 					blocksArr.push([rsBl, div4.id, div2.id, div3.id]);
 					observer.observe(div, options);
@@ -587,18 +711,37 @@
 			
 			///////////// MutationObserver section
 			
-			var callback = function(){
-				for (var i = 0; i < blocksArr.length; i++) {
+			var callback = function(mutationRecordsList){
+			
+			var mutId = []
+			//console.log(mutationRecordsList);
+			mutationRecordsList.forEach(function(mutationRecord, i) {
+				//console.log("Type of mutation: " + mutationRecord.type);
+				//console.log("Target.id: " + mutationRecordsList[i].target.parentNode.id);
+				mutId.push(mutationRecordsList[i].target.parentNode.id);
+			});			
+			
+				for (var i = 0; i < mutId.length; i++) {
+					for (var j = 0; j < blocksArr.length; j++) {
+						if (blocksArr[j][2] == mutId[i]  ||
+						    blocksArr[j][3] == mutId[i]) {
+							blocksArr[j][0](blocksArr[j][1],blocksArr[j][2],blocksArr[j][3]);
+							chColor(blocksArr[j][1]);
+							chIn(blocksArr[j][1]);
+						} 		
+					}
+				}		
+				/*for (var i = 0; i < blocksArr.length; i++) {
 					blocksArr[i][0](blocksArr[i][1],blocksArr[i][2],blocksArr[i][3]);
-					chColor(blocksArr[i][1]);
-					chIn(blocksArr[i][1]);
-				}
+					//chColor(blocksArr[i][1]);
+					//chIn(blocksArr[i][1]);
+				}*/				
 			};
 			
 			var observer = new MutationObserver(callback);
 			
 			var options = {
-				'childList': true,
+				//'childList': true,
 				'subtree': true,
 				'characterData': true
 			}
@@ -664,17 +807,16 @@
 				var bv1 = document.getElementById(id1).innerHTML;
 				var delay = document.getElementById(inpId).value * 1000;
 				var timer;
-				var D = new Date();
-				
+				//var D = new Date();							
 				clearTimeout(ctObj[out]);
 				
 				function initDelay() {			
 					 document.getElementById(out).innerHTML = 1;
 					 chColor(out);
 					 chIn(out);
-					 var cd = new Date();
+					 /*var cd = new Date();
 					 var dt = (cd - D)/1000;
-					 console.log(ctObj,ctObj[out],dt);
+					 console.log(ctObj,ctObj[out],dt);*/
 					 btObj[out] = 1;
 				}
 				if (bv1 == 0) {
@@ -686,42 +828,46 @@
 					timer = setTimeout(initDelay, delay);
 					ctObj[out] = timer;
 				}
-				
-				
+								
 				//console.log(ctObj,ctObj[out]);
 			}
-			
+						
 			function rsBl(out,id1,id2) {
 				var x1 = +document.getElementById(id1).innerHTML;
 				var x2 = +document.getElementById(id2).innerHTML;
 				var y = +document.getElementById(out).innerHTML;
-
-				y =  !(!(x1 || y) || x2); 
-							
-				document.getElementById(out).innerHTML = +y;
+				
+				setTimeout(yout, 400);
+				function yout() {
+					y =  !(!(x1 || y) || x2);
+					document.getElementById(out).innerHTML = +y;
+					chColor(out);
+					chIn(out);
+				}
+		
 			}
-			
+						
 			///////////// End of Blocks logic section
 			
 			function chColor(outId) {
 				var bc = document.getElementById(outId);
 				var bv = document.getElementById(outId).innerHTML;		
 				if (bv == 0) {
-				  bc.style.background = 'red';
+				  bc.style.background = '#fd3939'; //red
 				  for (var i = 0; i < arrowsArr.length; i++) {
 					if (outId == arrowsArr[i][0]) {
 					 arrowsArr[i][2].updateOptions(
-				     { render: {strokeStyle:'red'}})
+				     { render: {strokeStyle:'#fd3939'}})
 				     arrowsArr[i][2].redraw();
 					} 
 				  }
 				}
 				else {
-				  bc.style.background = 'green';
+				  bc.style.background = '#2d962d'; //green
 				  for (var i = 0; i < arrowsArr.length; i++) {
 					if (outId == arrowsArr[i][0]) {
 					 arrowsArr[i][2].updateOptions(
-				     { render: {strokeStyle:'green'}})
+				     { render: {strokeStyle:'#2d962d'}})
 				     arrowsArr[i][2].redraw();
 					} 
 				  }
@@ -772,6 +918,49 @@
 		  }
 		  
 		  dragndrop();
+		  
+			/*function getClientWidth()
+			{
+			  return document.compatMode=='CSS1Compat' && !window.opera?document.documentElement.clientWidth:document.body.clientWidth;
+			}
+
+			function getClientHeight()
+			{
+			  return document.compatMode=='CSS1Compat' && !window.opera?document.documentElement.clientHeight:document.body.clientHeight;
+			}
+			
+			var x = getClientWidth();
+			var y = getClientHeight();
+			
+			document.getElementById("main").style.width = x - 20 + "px";
+			document.getElementById("content").style.width = x - 150 + "px";
+			
+			document.getElementById("content").style.height = y - 60 + "px";
+			document.getElementById("menu").style.height = y - 60 + "px";
+						
+			document.body.onresize = function(){
+				x = getClientWidth();
+				y = getClientHeight();
+				
+				if (x >= 450 && y >= 700){
+				document.getElementById("main").style.width = x - 20 + "px";
+				document.getElementById("content").style.width = x - 150 + "px";
+				
+				document.getElementById("content").style.height = y - 60 + "px";
+				document.getElementById("menu").style.height = y - 60 + "px";
+				}
+				
+			}
+			
+			function fullscreen(element) {
+			  if(element.requestFullScreen) {
+				element.requestFullScreen();
+			  } else if(element.mozRequestFullScreen) {
+				element.mozRequestFullScreen();
+			  } else if(element.webkitRequestFullScreen) {
+				element.webkitRequestFullScreen();
+			  }
+			}*/			
 		  
 		</script>
 </html>
