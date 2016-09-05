@@ -21,6 +21,7 @@
 			<button class="menu-button" data-action="nor"> ORNOT </button>
 			<button class="menu-button" data-action="delay"> DELAY </button>
 			<button class="menu-button" data-action="ton"> TON </button>
+			<button class="menu-button" data-action="tof"> TOF </button>
 			<button class="menu-button" data-action="rs"> RS </button>
 			<span>Delete mode</span>
 			<div id = "delm-div">
@@ -149,6 +150,12 @@
 				
 				this.ton = function() {
 				  createBlock("ton", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.tof = function() {
+				  createBlock("tof", idnumber);
 				  dragndrop();
 				  idnumber++;
 				};
@@ -609,7 +616,10 @@
 					div3.id = "b" + idn + "out";
 					div3.setAttribute("data-action","startPoint");
 					input.id = "b" + idn + "input";
-					input.setAttribute("type","text");
+					input.setAttribute("type","number");
+					input.setAttribute("min","0");
+					input.setAttribute("value","1.5");
+					input.setAttribute("step","0.5");
 					span.innerHTML = "S";
 					document.getElementById("content").appendChild(div);
 					document.getElementById("Block"+idn).appendChild(spanId);
@@ -620,7 +630,7 @@
 					document.getElementById("Block"+idn).appendChild(span);
 					
 					blocksArr.push([delayBl, div3.id, div2.id, input.id]);
-					observer.observe(div, options);
+					observer.observe(div2, options);
 					
 				  break;
 				  
@@ -649,6 +659,7 @@
 					input.setAttribute("type","number");
 					input.setAttribute("min","0");
 					input.setAttribute("value","1.5");
+					input.setAttribute("step","0.5");
 					span.innerHTML = "S";
 					document.getElementById("content").appendChild(div);
 					document.getElementById("Block"+idn).appendChild(spanId);
@@ -659,6 +670,46 @@
 					document.getElementById("Block"+idn).appendChild(span);
 					
 					blocksArr.push([tonBl, div3.id, div2.id, input.id]);
+					observer.observe(div2, options);
+					
+				  break;
+				  
+				  case "tof":
+					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div'),
+						input = document.createElement('input'),
+						span = document.createElement('span');
+					div.className = "ui-draggable new";
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
+					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
+					div1.innerHTML = "TOF";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");					
+					div3.className = "out";
+					div3.id = "b" + idn + "out";
+					div3.setAttribute("data-action","startPoint");
+					input.id = "b" + idn + "input";
+					input.setAttribute("type","number");
+					input.setAttribute("min","0");
+					input.setAttribute("value","1.5");
+					input.setAttribute("step","0.5");
+					span.innerHTML = "S";
+					document.getElementById("content").appendChild(div);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
+					document.getElementById("Block"+idn).appendChild(input);
+					document.getElementById("Block"+idn).appendChild(span);
+					
+					blocksArr.push([tofBl, div3.id, div2.id, input.id]);
 					observer.observe(div2, options);
 					
 				  break;
@@ -799,6 +850,8 @@
 				var delay = document.getElementById(inpId).value * 1000;
 				function initDelay() {
 					document.getElementById(out).innerHTML = +bv1;
+					chColor(out);
+					chIn(out);
 				}
 				setTimeout(initDelay, delay);
 			}
@@ -810,26 +863,47 @@
 				//var D = new Date();							
 				clearTimeout(ctObj[out]);
 				
-				function initDelay() {			
-					 document.getElementById(out).innerHTML = 1;
-					 chColor(out);
-					 chIn(out);
-					 /*var cd = new Date();
-					 var dt = (cd - D)/1000;
-					 console.log(ctObj,ctObj[out],dt);*/
-					 btObj[out] = 1;
-				}
 				if (bv1 == 0) {
 					document.getElementById(out).innerHTML = 0;
 					btObj[out] = 0;
 					
 				}
 				if (bv1 == 1 && !btObj[out]){
-					timer = setTimeout(initDelay, delay);
+					timer = setTimeout(initDelay, delay, out, 1);
 					ctObj[out] = timer;
 				}
 								
 				//console.log(ctObj,ctObj[out]);
+			}
+			
+			function tofBl(out,id1,inpId) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var delay = document.getElementById(inpId).value * 1000;
+				var timer;
+				//var D = new Date();							
+				clearTimeout(ctObj[out]);
+
+				if (bv1 == 1) {
+					document.getElementById(out).innerHTML = 1;
+					btObj[out] = 0;
+					
+				}
+				if (bv1 == 0 && !btObj[out]){
+					timer = setTimeout(initDelay, delay, out, 0);
+					ctObj[out] = timer;
+				}
+								
+				//console.log(ctObj,ctObj[out]);
+			}
+			
+			function initDelay(outId,val) {			
+					 document.getElementById(outId).innerHTML = val;
+					 chColor(outId);
+					 chIn(outId);
+					 /*var cd = new Date();
+					 var dt = (cd - D)/1000;
+					 console.log(ctObj,ctObj[out],dt);*/
+					 btObj[outId] = 1;
 			}
 						
 			function rsBl(out,id1,id2) {
@@ -837,7 +911,7 @@
 				var x2 = +document.getElementById(id2).innerHTML;
 				var y = +document.getElementById(out).innerHTML;
 				
-				setTimeout(yout, 400);
+				setTimeout(yout, 150);
 				function yout() {
 					y =  !(!(x1 || y) || x2);
 					document.getElementById(out).innerHTML = +y;
