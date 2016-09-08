@@ -226,11 +226,61 @@
 			
 			new Menu(menu);
 			
+			function getCoords(elem) { 
+			  var box = elem.getBoundingClientRect();
+
+			  return {
+				top: box.top, //+ pageYOffset,
+				left: box.left //+ pageXOffset
+			  };
+
+			}
+			
+			var arrowCur = $cArrows('#content');
+			
+			function arrowDivCur(){
+				var arrowDiv = document.getElementById("arrow-div");
+				if (arrowDiv) arrowDiv.remove();
+				
+				//var arrowCur = $cArrows('#content');	
+				arrowCur.clear();
+				
+				var con = document.getElementById("content");
+				
+				var div = document.createElement('div');
+				div.id = "arrow-div";
+				div.className = "arrow-div";
+				div.style.position = "absolute";
+				div.style.left = event.clientX - getCoords(con).left - 2 + "px";
+				div.style.top = event.clientY - getCoords(con).top - 2 + "px";				
+				document.getElementById("content").appendChild(div);
+				
+				arrowCur.arrow('#'+oId, '#arrow-div',
+					  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
+					  
+			}
+			
+			function delArrowDivCur() {
+				if(event.keyCode == 27) {   // Esc key
+					var arrowDiv = document.getElementById("arrow-div");
+					arrowCur.clear();
+					if (arrowDiv) {
+						document.getElementById("content").removeChild(arrowDiv);
+						document.removeEventListener("mousemove", arrowDivCur);
+					}	
+				}
+				
+			}
+			
 			function ContentClick(elem) {
 								
 				this.startPoint = function() {
-				  event = event || window.event;
-				  oId = event.target.id;
+					event = event || window.event;
+					oId = event.target.id;			  
+					
+					document.addEventListener("mousemove", arrowDivCur);
+					document.addEventListener("keydown", delArrowDivCur);
+				  
 					if (delMode) {
 						if (confirm("Delete arrow(s) from: " + oId + "?")) {
 							delOutArrow(oId);
@@ -241,6 +291,7 @@
 				this.endPoint = function() {
 				  event = event || window.event;
 				  p2 = event.target.id;
+				  
 				  if (delMode) {
 						if (confirm("Delete arrow to: " + p2 + "?")) {
 							delInArrow([p2]);
@@ -248,13 +299,21 @@
 				  }
 				  else {
 				    if (!inUseObj[p2]) {
-					  var arrowsDrawerN = $cArrows('#content');	  
-					  arrowsDrawerN.arrow('#'+oId, '#'+p2,
-					  { arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
-					  arrowsArr.push([oId, p2, arrowsDrawerN]);
-					  document.getElementById(p2).innerHTML =
-					  document.getElementById(oId).innerHTML;
-					  inUseObj[p2] = 1;
+
+						var arrowDiv = document.getElementById("arrow-div");
+						arrowCur.clear();
+						if (arrowDiv) {
+							document.getElementById("content").removeChild(arrowDiv);
+							document.removeEventListener("mousemove", arrowDivCur);
+						}
+					
+						var arrowsDrawerN = $cArrows('#content');	  
+						arrowsDrawerN.arrow('#'+oId, '#'+p2,
+						{ arrow: { connectionType: 'side', sideFrom: 'right', sideTo: 'left'}});
+						arrowsArr.push([oId, p2, arrowsDrawerN]);
+						document.getElementById(p2).innerHTML =
+						document.getElementById(oId).innerHTML;						
+						inUseObj[p2] = 1;				
 				    }
 					else alert("Input is already in use");
 				  }	
@@ -816,7 +875,7 @@
 				var parentBl = document.getElementById(id1).parentElement;
 				var bv1 = document.getElementById(id1).innerHTML;
 				document.getElementById(out).innerHTML = +bv1;
-				bv1 == 1 ? 
+				+bv1 == 1 ? 
 				parentBl.style.background = "radial-gradient(#F7F7F7 0%,green 100%)" :
 				parentBl.style.background = "radial-gradient(#F7F7F7 0%,red 100%)";
 			}

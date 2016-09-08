@@ -306,3 +306,10 @@ div span {
 .del-cursor {
 	cursor: url(delete-cross.png), pointer;
 }
+
+.arrow-div {
+	position: fixed;
+	width: 1px;
+	height: 1px;
+	z-index:0;
+}
