@@ -1,17 +1,18 @@
 ﻿<!doctype html>
-<html lang="ru">
+<html>
 	<head>
 		<meta charset="utf-8">
-		<title>FBD emulator</title>
+		<title>FBD logic</title>
 		<script src="lib/modernizr-custom.js"></script>
 		<link rel="stylesheet" href="css/main.css" />	
 	</head>
 	<body>
 	<noscript>Sorry, your browser does not support JavaScript!</noscript>
-	<div id = "main"> 
+	<div id = "main">
+		<h1>FBD logic online</h1>
 		<div id = "menu" class="borders">
-			<span>Blocks</span>
-			<button class="menu-button" data-action="switch">1/0</button>
+			<span><a href="Blocks-info.html" target="_blank">Blocks</a></span>
+			<button class="menu-button" data-action="switch">SWITCH</button>
 			<button class="menu-button" data-action="out">OUT</button>
 			<button class="menu-button" data-action="and"> & </button>
 			<button class="menu-button" data-action="or"> OR </button>
@@ -22,26 +23,29 @@
 			<button class="menu-button" data-action="delay"> DELAY </button>
 			<button class="menu-button" data-action="ton"> TON </button>
 			<button class="menu-button" data-action="tof"> TOF </button>
+			<button class="menu-button" data-action="pulse"> PULSE </button>
 			<button class="menu-button" data-action="rs"> RS </button>
+			<button class="menu-button" data-action="trig"> TRIG </button>
+			
 			<span>Delete mode</span>
 			<div id = "delm-div">
 				<input type="checkbox" id="del-mode" data-action="delm"/>
 				<label for="del-mode"></label>
 			</div>			
 		</div>
-		<div id="content" class="borders">
-			<!-- <button class="menu-button fullscr-btn"
+		<div id="content" class="borders">			
+			<!--<button class="menu-button fullscr-btn"
 			onclick="fullscreen(document.documentElement);return false;">
 			</button> -->
 		  <div class="ui-draggable" id="Block1">
 		    <span class="bl-span-id">Block1</span>
-			<div class="block-name" data-action="canBeDel"> 1/0 </div>
+			<div class="block-name" data-action="canBeDel"> SWITCH </div>
 			<div class="out" id="b1out" data-action="startPoint">0</div>
 			<button class="sw-button" onclick="init('b1out')">1/0</button>
 		  </div>
 		  <div class="ui-draggable" id="Block2">
 			<span class="bl-span-id">Block2</span>
-			<div class="block-name" data-action="canBeDel"> 1/0 </div>
+			<div class="block-name" data-action="canBeDel"> SWITCH </div>
 			<div class="out" id="b2out" data-action="startPoint">0</div>
 			<button class="sw-button" onclick="init('b2out')">1/0</button>
 		  </div>
@@ -50,7 +54,8 @@
 			<div class="in in1" id="b3in1" data-action="endPoint"></div>
 			<div class="in in2" id="b3in2" data-action="endPoint"></div>
 			<div class="out" id="b3out" data-action="startPoint"></div>
-		  </div> -->
+		  </div>
+		  -->
 		</div>
 	</div>
 	</body>
@@ -160,8 +165,20 @@
 				  idnumber++;
 				};
 				
+				this.pulse = function() {
+				  createBlock("pulse", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
 				this.rs = function() {
 				  createBlock("rs", idnumber);
+				  dragndrop();
+				  idnumber++;
+				};
+				
+				this.trig = function() {
+				  createBlock("trig", idnumber);
 				  dragndrop();
 				  idnumber++;
 				};
@@ -403,7 +420,7 @@
 					spanId.innerHTML = div.id;
 					div1.className = "block-name";
 					div1.setAttribute("data-action","canBeDel");
-					div1.innerHTML = "1/0";
+					div1.innerHTML = "SWITCH";
 					div2.className = "out";
 					div2.id = "b" + idn + "out";
 					div2.setAttribute("data-action","startPoint");
@@ -611,7 +628,7 @@
 					div4.className = "out";
 					div4.id = "b" + idn + "out";
 					div4.setAttribute("data-action","startPoint");
-					div4.innerHTML = 0;
+					div4.innerHTML = 1;
 					document.getElementById("content").appendChild(div);
 					document.getElementById("Block"+idn).appendChild(spanId);
 					document.getElementById("Block"+idn).appendChild(div1);
@@ -783,6 +800,47 @@
 					
 				  break;
 				  
+				  case "pulse":
+					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div'),
+						input = document.createElement('input'),
+						span = document.createElement('span');
+					div.className = "ui-draggable new";
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
+					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
+					div1.innerHTML = "PULSE";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");					
+					div3.className = "out";
+					div3.id = "b" + idn + "out";
+					div3.setAttribute("data-action","startPoint");
+					div3.innerHTML = 0;
+					input.id = "b" + idn + "input";
+					input.setAttribute("type","number");
+					input.setAttribute("min","0");
+					input.setAttribute("value","1.5");
+					input.setAttribute("step","0.5");
+					span.innerHTML = "S";
+					document.getElementById("content").appendChild(div);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
+					document.getElementById("Block"+idn).appendChild(input);
+					document.getElementById("Block"+idn).appendChild(span);
+					
+					blocksArr.push([pulseBl, div3.id, div2.id, input.id]);
+					observer.observe(div2, options);
+					
+				  break;
+				  
 				  case "rs":
 					var div = document.createElement('div'),
 						spanId = document.createElement('span'),
@@ -826,6 +884,38 @@
 					observer.observe(div, options);
 					
 				  break;
+				  
+				  case "trig":
+					var div = document.createElement('div'),
+						spanId = document.createElement('span'),
+						div1 = document.createElement('div'),
+						div2 = document.createElement('div'),
+						div3 = document.createElement('div');
+					div.className = "ui-draggable new";
+					div.id = "Block" + idn;
+					spanId.className = "bl-span-id";
+					spanId.innerHTML = div.id;					
+					div1.className = "block-name";
+					div1.setAttribute("data-action","canBeDel");
+					div1.innerHTML = "TRIG";
+					div2.className = "in in1";
+					div2.id = "b" + idn + "in1";
+					div2.setAttribute("data-action","endPoint");					
+					div3.className = "out";
+					div3.id = "b" + idn + "out";
+					div3.setAttribute("data-action","startPoint");
+					div3.innerHTML = 0;	
+					document.getElementById("content").appendChild(div);
+					document.getElementById("Block"+idn).appendChild(spanId);
+					document.getElementById("Block"+idn).appendChild(div1);
+					document.getElementById("Block"+idn).appendChild(div2);
+					document.getElementById("Block"+idn).appendChild(div3);
+					
+					blocksArr.push([trigBl, div3.id, div2.id]);
+					observer.observe(div, options);
+					
+				  break;
+				  
 				}
 			
 			}
@@ -966,6 +1056,29 @@
 				//console.log(ctObj,ctObj[out]);
 			}
 			
+			function pulseBl(out,id1,inpId) {
+				var bv1 = document.getElementById(id1).innerHTML;
+				var delay = document.getElementById(inpId).value * 1000;
+				var timer;
+				//var D = new Date();							
+				clearTimeout(ctObj[out]);
+				
+				if (bv1 == 0) {
+					//document.getElementById(out).innerHTML = 0;
+					//btObj[out] = 0;
+					
+				}
+				
+				if (bv1 == 1){
+					document.getElementById(out).innerHTML = 1;
+					setTimeout(pulseInit, delay, out, 0);
+				}
+				
+				function pulseInit(out,value) {
+					document.getElementById(out).innerHTML = value;
+				}
+			}
+			
 			function initDelay(outId,val) {			
 					 document.getElementById(outId).innerHTML = val;
 					 chColor(outId);
@@ -981,7 +1094,7 @@
 				var x2 = +document.getElementById(id2).innerHTML;
 				var y = +document.getElementById(out).innerHTML;
 				
-				setTimeout(yout, 150);
+				setTimeout(yout, 10);
 				function yout() {
 					y =  !(!(x1 || y) || x2);
 					document.getElementById(out).innerHTML = +y;
@@ -989,6 +1102,15 @@
 					chIn(out);
 				}
 		
+			}
+			
+			function trigBl(out,id1) {
+				var bv1 = +document.getElementById(id1).innerHTML;
+				if (bv1) {
+					document.getElementById(out).innerHTML = 1;
+					setTimeout(initDelay, 15, out, 0);
+				}
+				
 			}
 						
 			///////////// End of Blocks logic section
@@ -1063,7 +1185,7 @@
 		  
 		  dragndrop();
 		  
-			/*function getClientWidth()
+		/*	function getClientWidth()
 			{
 			  return document.compatMode=='CSS1Compat' && !window.opera?document.documentElement.clientWidth:document.body.clientWidth;
 			}
@@ -1079,8 +1201,8 @@
 			document.getElementById("main").style.width = x - 20 + "px";
 			document.getElementById("content").style.width = x - 150 + "px";
 			
-			document.getElementById("content").style.height = y - 60 + "px";
-			document.getElementById("menu").style.height = y - 60 + "px";
+			document.getElementById("content").style.height = y - 80 + "px";
+			document.getElementById("menu").style.height = y - 80 + "px";
 						
 			document.body.onresize = function(){
 				x = getClientWidth();
@@ -1090,8 +1212,8 @@
 				document.getElementById("main").style.width = x - 20 + "px";
 				document.getElementById("content").style.width = x - 150 + "px";
 				
-				document.getElementById("content").style.height = y - 60 + "px";
-				document.getElementById("menu").style.height = y - 60 + "px";
+				document.getElementById("content").style.height = y - 70 + "px";
+				document.getElementById("menu").style.height = y - 70 + "px";
 				}
 				
 			}
@@ -1104,8 +1226,9 @@
 			  } else if(element.webkitRequestFullScreen) {
 				element.webkitRequestFullScreen();
 			  }
-			}*/			
-		  
+			}			
+		*/
+		
 		</script>
 </html>
 
