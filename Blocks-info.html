@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Blocks info</title>
+	<link rel="stylesheet" href="css/main.css" />
+	<link rel="stylesheet" href="css/Blocks-info.css" />
+</head>
+<body>
+	<div id = "main-info" class="borders">
+		<h1>Information about blocks</h1>
+		<p>		
+			With <a href="index.html">FBD logic online</a> you can create chains of logic-blocks
+			and see how they interact. At the start, you have two 1/0 switch blocks. To add output block
+			press button "OUT".
+		</p>
+		<div class="video">
+			<video width="600" height="300" controls="controls" autoplay="autoplay" loop="loop">
+				<source src="video/add_block.webm" type='video/webm; codecs="vp8, vorbis"'>
+			</video>
+		</div>
+		<p>			
+			To add a new logic-block, choose button from menu on the left side of the page and click on it.
+			The new block will drop down to the center of work board, and you can drag it in place that you want.		
+		</p>
+		<p>
+			When you want to connect switch block to output block: click on rectangle on the right side of
+			the 1/0 block, you will see connection arrow. Connect it to rectangle on the left side of the 1/0 block and
+			click again.
+		</p>
+		<div class="video">
+			<video width="400" height="180" controls="controls" autoplay="autoplay" loop="loop">
+				<source src="video/block_connect.webm" type='video/webm; codecs="vp8, vorbis"'>
+			</video>
+		</div>		
+		<p>
+			
+			For all of the logic-blocks, outputs are rectangles on right side of the block, and inputs
+			rectangles on left side. We need "1/0" switch blocks and "OUT" block because
+			they give us the logic 1 and 0 so we can see how the logic elements interact.
+			Click the 1/0 button in switch block and you can see what happens. It changes output color to green.
+			Now you can toggle between logic 0 and 1.
+		</p>
+		<div class="video">
+			<video width="400" height="180" controls="controls" autoplay="autoplay" loop="loop">
+				<source src="video/block_click.webm" type='video/webm; codecs="vp8, vorbis"'>
+			</video>
+		</div>
+		
+		<h3>& (AND)</h3>
+		
+		<div class="ui-draggable block-info">
+			<span class="bl-span-id">Block#</span>
+			<div class="block-name">&amp;</div>
+			<div class="in in1"></div>
+			<div class="in in2"></div>
+			<div class="out"></div>
+		</div>		
+
+		<p>
+			The AND block has one output and two inputs. The output is "True" if both inputs are "True", and for all other cases the output is "False".
+		</p>
+		<table>
+			<thead>
+				<tr><th>Input 1</th><th>Input 2</th><th>Output</th></tr>
+			</thead>
+			<tbody> <tr><td>0</td><td>0</td><td>0</td></tr>
+					<tr><td>1</td><td>0</td><td>0</td></tr>
+					<tr><td>0</td><td>1</td><td>0</td></tr>
+					<tr><td>1</td><td>1</td><td>1</td></tr>
+			</tbody>
+		</table>
+
+		<h3>OR</h3>
+		
+		<div class="ui-draggable block-info">
+			<span class="bl-span-id">Block#</span>
+			<div class="block-name">OR</div>
+			<div class="in in1"></div>
+			<div class="in in2"></div>
+			<div class="out"></div>
+		</div>		
+
+		<p>
+			The OR block has one output and two inputs. The output is "True" if any of inputs are "True", and if both of inputs are "False" output is "False".
+		</p>
+		<table>
+			<thead>
+				<tr><th>Input 1</th><th>Input 2</th><th>Output</th></tr>
+			</thead>
+			<tbody> <tr><td>0</td><td>0</td><td>0</td></tr>
+					<tr><td>1</td><td>0</td><td>1</td></tr>
+					<tr><td>0</td><td>1</td><td>1</td></tr>
+					<tr><td>1</td><td>1</td><td>1</td></tr>
+			</tbody>
+		</table>
+		
+		<h3>XOR</h3>
+		
+		<div class="ui-draggable block-info">
+			<span class="bl-span-id">Block#</span>
+			<div class="block-name">XOR</div>
+			<div class="in in1"></div>
+			<div class="in in2"></div>
+			<div class="out"></div>
+		</div>		
+
+		<p>
+			The XOR block has one output and two inputs. Work like OR block except the case when both inputs are "True" - in this case output is "False".
+		</p>
+		<table>
+			<thead>
+				<tr><th>Input 1</th><th>Input 2</th><th>Output</th></tr>
+			</thead>
+			<tbody> <tr><td>0</td><td>0</td><td>0</td></tr>
+					<tr><td>1</td><td>0</td><td>1</td></tr>
+					<tr><td>0</td><td>1</td><td>1</td></tr>
+					<tr><td>1</td><td>1</td><td>0</td></tr>
+			</tbody>
+		</table>
+		
+		<h3>NOT</h3>
+		
+		<div class="ui-draggable block-info">
+			<span class="bl-span-id">Block#</span>
+			<div class="block-name">NOT</div>
+			<div class="in in1"></div>
+			<div class="out"></div>
+		</div>		
+
+		<p>
+			The NOT block has one output and one input. The output is inverted input value.
+		</p>
+		<table>
+			<thead>
+				<tr><th>Input 1</th><th>Output</th></tr>
+			</thead>
+			<tbody> <tr><td>0</td><td>1</td></tr>
+					<tr><td>1</td><td>0</td></tr>
+			</tbody>
+		</table>
+		
+		<h3>&NOT (NAND)</h3>
+		
+		<div class="ui-draggable block-info">
+			<span class="bl-span-id">Block#</span>
+			<div class="block-name">&NOT</div>
+			<div class="in in1"></div>
+			<div class="in in2"></div>
+			<div class="out"></div>
+		</div>		
+
+		<p>
+			The &NOT block has one output and two inputs. Work like AND block with inverted output.
+		</p>
+		<table>
+			<thead>
+				<tr><th>Input 1</th><th>Input 2</th><th>Output</th></tr>
+			</thead>
+			<tbody> <tr><td>0</td><td>0</td><td>1</td></tr>
+					<tr><td>1</td><td>0</td><td>1</td></tr>
+					<tr><td>0</td><td>1</td><td>1</td></tr>
+					<tr><td>1</td><td>1</td><td>0</td></tr>
+			</tbody>
+		</table>
+		
+		<h3>ORNOT (NOR)</h3>
+		
+		<div class="ui-draggable block-info">
+			<span class="bl-span-id">Block#</span>
+			<div class="block-name">ORNOT</div>
+			<div class="in in1"></div>
+			<div class="in in2"></div>
+			<div class="out"></div>
+		</div>		
+
+		<p>
+			The OR block has one output and two inputs. Work like OR block with inverted output.
+		</p>
+		<table>
+			<thead>
+				<tr><th>Input 1</th><th>Input 2</th><th>Output</th></tr>
+			</thead>
+			<tbody> <tr><td>0</td><td>0</td><td>1</td></tr>
+					<tr><td>1</td><td>0</td><td>0</td></tr>
+					<tr><td>0</td><td>1</td><td>0</td></tr>
+					<tr><td>1</td><td>1</td><td>0</td></tr>
+			</tbody>
+		</table>
+		
+		<h3>DELAY</h3>
+		
+		<div class="ui-draggable block-info">
+			<span class="bl-span-id">Block#</span>
+			<div class="block-name">DELAY</div>
+			<div class="in in1"></div>
+			<div class="out">0</div>
+			<input id="b5input" type="number" min="0" value="1.5" step="0.5">
+			<span>S</span>
+		</div>
+		
+		<p>
+			The DELAY block has one output and one input. The output is delayed input value.
+		</p>
+		
+		<div class="video">
+			<video width="500" height="180" controls="controls" autoplay="autoplay" loop="loop">
+				<source src="video/delay.webm" type='video/webm; codecs="vp8, vorbis"'>
+			</video>
+		</div>
+		
+		<h3>TON</h3>
+		
+		<div class="ui-draggable block-info">
+			<span class="bl-span-id">Block#</span>
+			<div class="block-name">TON</div>
+			<div class="in in1"></div>
+			<div class="out">0</div>
+			<input id="b5input" type="number" min="0" value="1.5" step="0.5">
+			<span>S</span>
+		</div>
+		
+		<p>
+			The TON block has one output and one input. The output is delayed on rising edge input value.
+		</p>
+		
+		<div class="video">
+			<video width="500" height="180" controls="controls" autoplay="autoplay" loop="loop">
+				<source src="video/ton.webm" type='video/webm; codecs="vp8, vorbis"'>
+			</video>
+		</div>
+		
+		<h3>TOF</h3>
+		
+		<div class="ui-draggable block-info">
+			<span class="bl-span-id">Block#</span>
+			<div class="block-name">TOF</div>
+			<div class="in in1"></div>
+			<div class="out">0</div>
+			<input id="b5input" type="number" min="0" value="1.5" step="0.5">
+			<span>S</span>
+		</div>
+		
+		<p>
+			The TOF block has one output and one input. The output is delayed on falling edge input value.
+		</p>
+		
+		<div class="video">
+			<video width="500" height="180" controls="controls" autoplay="autoplay" loop="loop">
+				<source src="video/tof.webm" type='video/webm; codecs="vp8, vorbis"'>
+			</video>
+		</div>
+		
+		<h3>RS</h3>
+		
+		<div class="ui-draggable block-info">
+			<span class="bl-span-id">Block#</span>
+			<div class="block-name">RS</div>
+			<div class="in in1"></div>
+			<div class="in in2"></div>
+			<div class="out">0</div>
+			<span class="i-span1">S</span>
+			<span class="i-span2">R</span>
+		</div>
+		
+		<p>
+			The RS block has one output and two inputs: S - SET, R - RESET. See how this block work at video below:
+		</p>
+		
+		<div class="video">
+			<video width="500" height="180" controls="controls" autoplay="autoplay" loop="loop">
+				<source src="video/rs.webm" type='video/webm; codecs="vp8, vorbis"'>
+			</video>
+		</div>
+		
+	</div>
+</body>
+</html>
