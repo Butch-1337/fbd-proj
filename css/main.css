@@ -9,7 +9,7 @@ h1 {
 
 #main {
 	width: 1330px;
-	margin: 10px auto;
+	margin: 0 auto;
 }
 
 .borders {
@@ -24,9 +24,9 @@ h1 {
 
 #menu {
 	float: left;
-	height: 720px;
+	height: 700px;
 	width: 100px;
-	margin: 10px 10px;
+	margin: 10px 10px 0;
 	background: #eaeaea;	
 }
 
@@ -34,11 +34,55 @@ h1 {
 	display: inline-block;
 	width: 100px;
 	margin: 5px auto;
-	font-size: 20px;
+	font-size: 18px;
 	text-align: center;
 }
 
-button {
+li {
+	list-style: none;
+}
+
+#vertical-ticker{
+	height:511px;
+	overflow:hidden;
+	margin:0; padding:0;
+}
+
+#vertical-ticker li:first-child {
+	border-top:1px solid grey;
+}
+
+#vertical-ticker li{
+	padding:5px 0;
+	display:block;
+	border-bottom:1px solid grey;
+}
+
+#ticker-previous {
+	cursor: pointer;
+	margin: 0 auto;
+	width: 0;
+	border: 10px solid transparent;
+	border-bottom: 10px solid grey;
+}
+
+#ticker-previous:hover {
+	border-bottom: 10px solid #F7F7F7;
+}
+
+#ticker-next{
+	cursor: pointer;
+	margin: 0 auto;
+	width: 0;
+	border: 10px solid transparent;
+	border-top: 10px solid grey;
+}
+
+#ticker-next:hover {
+	border-top: 10px solid #F7F7F7;
+}
+	
+button{
 	cursor: pointer;
 	background: #F7F7F7;
     background: -moz-linear-gradient(top, #F7F7F7 0%, #757575 100%);
@@ -89,7 +133,7 @@ button:hover {
 
 #content {
 	float: left;	
-	height: 720px;
+	height: 700px;
 	width: 1200px;
 	margin: 10px auto;
 	background: #eaeaea;
