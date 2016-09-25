@@ -5,11 +5,13 @@
 
 h1 {
 	text-align: center;
+	font-size: 4vh;
 }
 
 #main {
-	width: 1330px;
-	margin: 0 auto;
+	min-width: 1000px;
+	width: 100vw;
+	margin: 0 0;
 }
 
 .borders {
@@ -24,15 +26,17 @@ h1 {
 
 #menu {
 	float: left;
-	height: 700px;
-	width: 100px;
-	margin: 10px 10px 0;
+	min-height: 530px;
+	height: 91.5vh;
+	min-width: 60px;
+	width: 5vw;
+	margin: 10px 5px;
 	background: #eaeaea;	
 }
 
 #menu span{
 	display: inline-block;
-	width: 100px;
+	width: 5vw;
 	margin: 5px auto;
 	font-size: 18px;
 	text-align: center;
@@ -43,7 +47,7 @@ li {
 }
 
 #vertical-ticker{
-	height:511px;
+	height:358px;
 	overflow:hidden;
 	margin:0; padding:0;
 }
@@ -99,13 +103,14 @@ button:hover {
 }
 
 .menu-button {
-	width: 80px;
+	display: block;
+	min-width: 40px;
+	width: 4vw;
 	height: 30px;
-	margin: 5px 10px;		
-    padding: 5px;
+	margin: 5px auto;		
     text-align: center;
     font-family: 'Times New Roman';
-    font-size: 14px;
+    font-size: 1.5vh;
 	background: #F7F7F7;
     background: -moz-linear-gradient(top, #F7F7F7 0%, #A8A8A8 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F7F7F7), color-stop(100%,#A8A8A8));
@@ -126,25 +131,33 @@ button:hover {
 }
 
 .sw-button {
-	width: 40px;
-	height: 25px;
-	margin: 5px auto;
+	min-width: 20px;
+	width: 4vh;
+	max-width: 40px;
+	height: 3vh;
+	max-height: 20px;
+	font-size: 1.5vh;
+	margin: 0.5vh auto;
 }
 
 #content {
 	float: left;	
-	height: 700px;
-	width: 1200px;
-	margin: 10px auto;
+	min-height: 530px;
+	height: 91.5vh;
+	min-width: 920px;
+	width: 92vw;
+	margin-top: 10px;
 	background: #eaeaea;
 	z-index: -1;
 	position: relative;
 }
 
 .ui-draggable {
-	width: 100px;
-	height: 100px;
-	margin: 10px;
+	width: 12vh;
+	max-width: 100px;
+	height: 12vh;
+	max-height: 100px;
+	margin: 1vh;
 	text-align: center;
 	background: #757575;
 	background: -moz-radial-gradient(#F7F7F7 0%, #757575 100%);
@@ -169,8 +182,8 @@ button:hover {
 }
 
 .ui-draggable .block-name {
-	padding-top: 5px;
-	font-size: 20px;
+	padding-top: 0.5vh;
+	font-size: 2.2vh;
 	text-align: center;
 }
 
@@ -178,12 +191,20 @@ button:hover {
 	/*cursor: default;*/
 }
 
+.bl-span-id {
+	line-height: 2vh;
+	font-size: 1.7vh;
+	color: #777;
+}
+
 .in {
 	position: absolute;
-	height: 15px;
-	width: 10px;
+	height: 1.7vh;
+	min-width: 5px;
+	width: 0.5vw;
+	font-size: 1.5vh;
 	background: #9a9a9a;
-	left: -8px;
+	left: -0.4vw;
 	   border-top: 2px solid #a8a8a8;
 	  border-left: 2px solid #a8a8a8;
 	 border-right: 2px solid #757575;  	  
@@ -209,11 +230,13 @@ button:hover {
 
 .out {
 	position: absolute;
-	height: 15px;
-	width: 10px;
+	height: 1.7vh;
+	min-width: 5px;
+	width: 0.5vw;
+	font-size: 1.5vh;
 	background: #9a9a9a;
-	right: -8px;
-	top: 45%;
+	right: -0.4vw;
+	top: 42%;
 	   border-top: 2px solid #a8a8a8;
 	  border-left: 2px solid #a8a8a8;
 	 border-right: 2px solid #757575;   
@@ -268,7 +291,8 @@ div span {
 }
 
 #delm-div {
-	width: 60px;
+	min-width: 33px;
+	width: 3vw;
 	margin: 5px auto;	
 }
 
@@ -276,8 +300,10 @@ div span {
 [for="del-mode"] {
 	position: relative;
 	display: block;
-	width: 60px;
-	height: 60px;
+	min-width: 33px;
+	width: 3vw;
+	min-height: 33px;
+	height: 3vw;
 	border-radius: 100%;
 	background: #ddd linear-gradient(#ccc, #fff);
 	box-shadow:
@@ -328,8 +354,7 @@ div span {
 
 .i-span1 {
 	position: absolute;
-	height: 15px;
-	width: 10px;
+	font-size: 1.7vh;
 	left: 2px;
 	top: 22%;
 	color: #777;
@@ -338,17 +363,11 @@ div span {
 
 .i-span2 {
 	position: absolute;
-	height: 15px;
-	width: 10px;
+	font-size: 1.7vh;
 	left: 2px;
 	bottom: 22%;
 	color: #777;	
 	cursor: default;
-}
-
-.bl-span-id {
-	line-height: 20px;
-	color: #777;
 }
 
 .del-cursor {
